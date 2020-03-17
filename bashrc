@@ -18,6 +18,17 @@ set -o vi
 # source: https://news.ycombinator.com/item?id=21317623&p=2
 export BASH_SILENCE_DEPRECATION_WARNING=1
 
+#----------------------------------------------------
+
+# DOC FORMAT (Use for below functions)
+
+# myfunction()
+# DESCRIPTION:
+# USAGE:
+# SOURCES:
+
+#----------------------------------------------------
+
 # USAGE:
 #
 #   tyler$ tcngetfilebirthday myfile.txt
@@ -47,6 +58,8 @@ function tcngetfilebirthday() {
 }
 export -f tcngetfilebirthday
 
+#----------------------------------------------------
+
 # USAGE:
 #
 #   tyler$ tcngetos
@@ -64,7 +77,6 @@ function tcngetos() {
 	fi
 }
 export -f tcngetos
-
 
 #----------------------------------------------------
 
