@@ -1,21 +1,51 @@
 
-# # # # # # # # # # # # # # # # # # 
+# # # # # # # # # # # # # # # # # #
 #                                  #
 #  $$$$$$$$\  $$$$$$\  $$\   $$\   #
 #  \__$$  __|$$  __$$\ $$$\  $$ |  #
 #     $$ |   $$ /  \__|$$$$\ $$ |  #
 #     $$ |   $$ |      $$ $$\$$ |  #
-#     $$ |   $$ |      $$ \$$$$ |  # 
+#     $$ |   $$ |      $$ \$$$$ |  #
 #     $$ |   $$ |  $$\ $$ |\$$$ |  #
-#     $$ |   \$$$$$$  |$$ | \$$ |  # 
+#     $$ |   \$$$$$$  |$$ | \$$ |  #
 #     \__|    \______/ \__|  \__|  #
 #                                  #
-# # # # # # # # # # # # # # # # # # 
+# # # # # # # # # # # # # # # # # #
 
 set -o vi
 
-# ugh, macOS source: https://news.ycombinator.com/item?id=21317623&p=2
+# macOS to stop giving warnings upon using bash
+# source: https://news.ycombinator.com/item?id=21317623&p=2
 export BASH_SILENCE_DEPRECATION_WARNING=1
+
+function tcngetfileage() {
+	# if on mac
+	if [ "$(tcngetos)" == "linux" ]; then
+		echo "you're on Linux!"
+	elif [ "$(tcngetos)" == "macos" ]; then
+		# year
+		yearf=GetFileInfo -d $1 | cut -f 1 -d " " | sed 's/[0-9][0-9]\///g'
+		# month
+		#monthf = GetFileInfo -d $1 | cut -f 1 -d " " | sed 's/[0-9][0-9]\///g'
+		# day
+		#dayf = GetFileInfo -d $1 | cut -f 1 -d " " | sed 's/[0-9][0-9]\///g'
+		echo "$YEARF"
+	fi
+}
+export -f tcngetfileage
+
+function tcngetos() {
+	if [ "$(uname)" == "Darwin" ]; then
+		echo "macos"
+	elif [ "$(expr substr $(uname -s) 1 5)" == "Linux" ]; then
+		echo "linux"
+	elif [ "$(expr substr $(uname -s) 1 10)" == "MINGW32_NT" ]; then
+		echo "ming32"
+	elif [ "$(expr substr $(uname -s) 1 10)" == "MINGW64_NT" ]; then
+		echo "ming64"
+	fi
+}
+export -f tcngetfileage
 
 
 #----------------------------------------------------
@@ -172,6 +202,26 @@ function tcnyoutubedl() {
 }
 export -f tcnyoutubedl
 
-
 # source: https://askubuntu.com/questions/634584/how-to-download-youtube-videos-as-a-best-quality-audio-mp3-using-youtube-dl
 alias tcnyoutubedlmusic='youtube-dl -f bestaudio --extract-audio --audio-format mp3 --audio-quality 0'
+
+#----------------------------------------------------
+# WIP
+# does not remove any files, only addes files to target dir
+# usage:
+#         tcnadddates <source directory> <target directory>
+# ie
+#         tcnadddates /home/billy/allmyrandomfiles /home/billymyorganizedfiles
+#
+# flag ideas:
+#           --tiered      creates a tiered directory structure (this could be a different tool)
+#           <source filter> (only apply to files in the source directory) regex
+#
+#function tcnadddates() {
+	# check to make sure there are two arguments
+	# check to make sure the first argument is a directory
+	# check to make sure the second argument is a directory
+	# print  all files (full path)
+	#find "$(pwd)" -type f | rename 's/$/$/'
+#}
+#export -f tcnadddates()
