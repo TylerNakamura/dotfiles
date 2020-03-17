@@ -219,6 +219,7 @@ export -f tcnyoutubedl
 alias tcnyoutubedlmusic='youtube-dl -f bestaudio --extract-audio --audio-format mp3 --audio-quality 0'
 
 #----------------------------------------------------
+
 function tcnadddates() {
   for targetfile in $(find "$(pwd)" -type f)
   do
@@ -230,3 +231,10 @@ function tcnadddates() {
   done
 }
 export -f tcnadddates
+
+#----------------------------------------------------
+
+# source: https://stackoverflow.com/questions/1657017/how-to-squash-all-git-commits-into-one
+# squashes the WHOLE current tree into one
+# CAREFUL
+alias tcngitsquashallcommitsintoone='git reset $(git commit-tree HEAD^{tree} -m "A new start")'
