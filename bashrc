@@ -23,6 +23,11 @@ export BASH_SILENCE_DEPRECATION_WARNING=1
 #   tyler$ tcngetfilebirthday myfile.txt
 #   2020-03-16
 #
+# This one is special because it is cross platform (mac and linux)
+# it also just defaults to iso8601 format (just date)
+# it also makes assumptions about what the "creation date" is
+# Linux FS does not store creation date, so taking the earliest of 3 dates:
+# access/modify/read
 function tcngetfilebirthday() {
 	if [ "$(tcngetos)" == "linux" ]; then
 		echo "you're on Linux! This code has not yet been written"
@@ -220,6 +225,9 @@ alias tcnyoutubedlmusic='youtube-dl -f bestaudio --extract-audio --audio-format 
 
 #----------------------------------------------------
 
+# TODO, docs needed
+# DANGER, this will actually touch your FS,
+# it's currently not accepting dir input, only runs on . (see the $PWD flag below)
 function tcnadddates() {
   for targetfile in $(find "$(pwd)" -type f)
   do
