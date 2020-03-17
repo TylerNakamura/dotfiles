@@ -18,22 +18,35 @@ set -o vi
 # source: https://news.ycombinator.com/item?id=21317623&p=2
 export BASH_SILENCE_DEPRECATION_WARNING=1
 
-function tcngetfileage() {
-	# if on mac
+# USAGE:
+#
+#   tyler$ tcngetfilebirthday myfile.txt
+#   2020-03-16
+#
+function tcngetfilebirthday() {
 	if [ "$(tcngetos)" == "linux" ]; then
-		echo "you're on Linux!"
+		echo "you're on Linux! This code has not yet been written"
+		exit 1;
 	elif [ "$(tcngetos)" == "macos" ]; then
+		getfileinfod=$(GetFileInfo -d $1 | cut -f 1 -d " ")
+
 		# year
-		yearf=GetFileInfo -d $1 | cut -f 1 -d " " | sed 's/[0-9][0-9]\///g'
+		yearf=$(echo $getfileinfod | cut -f 3 -d "/")
 		# month
-		#monthf = GetFileInfo -d $1 | cut -f 1 -d " " | sed 's/[0-9][0-9]\///g'
+		monthf=$(echo $getfileinfod | cut -f 1 -d "/")
 		# day
-		#dayf = GetFileInfo -d $1 | cut -f 1 -d " " | sed 's/[0-9][0-9]\///g'
-		echo "$YEARF"
+		dayf=$(echo $getfileinfod | cut -f 2 -d "/")
+
+		echo "$yearf-$monthf-$dayf"
 	fi
 }
-export -f tcngetfileage
+export -f tcngetfilebirthday
 
+# USAGE:
+#
+#   tyler$ tcngetos
+#   macos
+#
 function tcngetos() {
 	if [ "$(uname)" == "Darwin" ]; then
 		echo "macos"
@@ -45,7 +58,7 @@ function tcngetos() {
 		echo "ming64"
 	fi
 }
-export -f tcngetfileage
+export -f tcngetos
 
 
 #----------------------------------------------------
@@ -206,22 +219,14 @@ export -f tcnyoutubedl
 alias tcnyoutubedlmusic='youtube-dl -f bestaudio --extract-audio --audio-format mp3 --audio-quality 0'
 
 #----------------------------------------------------
-# WIP
-# does not remove any files, only addes files to target dir
-# usage:
-#         tcnadddates <source directory> <target directory>
-# ie
-#         tcnadddates /home/billy/allmyrandomfiles /home/billymyorganizedfiles
-#
-# flag ideas:
-#           --tiered      creates a tiered directory structure (this could be a different tool)
-#           <source filter> (only apply to files in the source directory) regex
-#
-#function tcnadddates() {
-	# check to make sure there are two arguments
-	# check to make sure the first argument is a directory
-	# check to make sure the second argument is a directory
-	# print  all files (full path)
-	#find "$(pwd)" -type f | rename 's/$/$/'
-#}
-#export -f tcnadddates()
+function tcnadddates() {
+  for targetfile in $(find "$(pwd)" -type f)
+  do
+    basefile=$(basename $targetfile)
+    filepath=$(dirname $targetfile)
+    newfilename=$(tcngetfilebirthday $basefile)-$basefile
+    mv "$filepath/$basefile" "$filepath/$newfilename"
+    echo " mv $filepath/$basefile $filepath/$newfilename"
+  done
+}
+export -f tcnadddates
