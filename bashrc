@@ -258,3 +258,7 @@ export -f tcnadddates
 # squashes the WHOLE current tree into one
 # CAREFUL
 alias tcngitsquashallcommitsintoone='git reset $(git commit-tree HEAD^{tree} -m "A new start")'
+
+#----------------------------------------------------
+
+alias tcnmacrenamescreenshots='rename "s/Screen\ Shot\ //" *.png'
