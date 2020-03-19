@@ -262,3 +262,10 @@ alias tcngitsquashallcommitsintoone='git reset $(git commit-tree HEAD^{tree} -m 
 #----------------------------------------------------
 
 alias tcnmacrenamescreenshots='rename "s/Screen\ Shot\ //" *.png'
+
+#----------------------------------------------------
+
+# TODO - format this better
+# favorite wireshark filters
+# dns queries with no responses:
+#     dns && (dns.flags.response == 0) && ! dns.response_in
