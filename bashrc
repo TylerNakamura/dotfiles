@@ -265,6 +265,50 @@ alias tcnmacrenamescreenshots='rename "s/Screen\ Shot\ //" *.png'
 
 #----------------------------------------------------
 
+# takes a directory tree and flattens it
+#/dir1
+#   /dir2 
+#      |
+#       --- file1
+#      |
+#       --- file2
+#
+#/dir1
+#   |
+#    --- file1
+#   |
+#   --- file2
+#
+# source: https://unix.stackexchange.com/questions/52814/flattening-a-nested-directory/52816#
+function tcnflattendirectory() {
+  if [ ! $# -eq 1 ]
+  then
+    echo "Please specify one directory path as an argument"
+    return
+  fi
+
+  # if the argument supplied is not a directory
+  # exit the script
+  if [ ! -d "$1" ]; then
+    echo "$1 is not a directory!"
+    return
+  fi
+
+  read -p "DANGER. YOU ARE ABOUT TO FLATTEN THE DIRECTORY $1 PERMANENTLY. IS THIS REALLY WHAT YOU WANT TO DO? [y, n] " -n 1 -r
+  echo
+  if [[ $REPLY =~ ^[Yy]$ ]]
+  then
+    # bring all files to the top
+    find $1 -mindepth 2 -type f -exec mv -i '{}' $1 ';'
+    
+    # remove all empty directories remaining
+    find $1 -type d -empty -delete
+  fi
+}
+export -f tcnflattendirectory
+
+#----------------------------------------------------
+
 # TODO - format this better
 # favorite wireshark filters
 # dns queries with no responses:
