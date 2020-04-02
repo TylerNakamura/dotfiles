@@ -18,6 +18,10 @@ set -o vi
 # source: https://news.ycombinator.com/item?id=21317623&p=2
 export BASH_SILENCE_DEPRECATION_WARNING=1
 
+# philosophies
+# keep each function independent, list dependencies if otherwise
+# portability and cross platform support is highest priority
+
 #----------------------------------------------------
 
 # DOC FORMAT (Use for below functions)
@@ -79,6 +83,13 @@ export -f tcngetfilebirthday
 
 #----------------------------------------------------
 
+# mac date command doesn't have iso output
+# how stupid is that
+# source: https://stackoverflow.com/questions/7216358/date-command-on-os-x-doesnt-have-iso-8601-i-option
+alias tcnmacisodate="date -u +'%Y-%m-%dT%H:%M:%SZ'"
+
+#----------------------------------------------------
+
 # USAGE:
 #
 #   tyler$ tcngetos
@@ -128,6 +139,23 @@ function tcncleanup() {
   # if trash exists (macos), delete everything inside of it
 }
 export -f tcncleanup
+
+#----------------------------------------------------
+
+# prints in CSV
+# useful for monitoring and testing "intermittent" issues
+# USAGE:
+#      user$: tcncurlloop google.com
+#
+# what happens when it times out? what is the output TODO
+# the date command is like that for iso support on macos (date on macos doesn't have a flag for iso output)
+function tcncurlloop(){
+	while true
+		do curl -w '%{http_code}, %{time_total}, ' $1 --connect-timeout 3 -o /dev/null --silent; date -u +"%Y-%m-%dT%H:%M:%SZ"
+		sleep 1s;
+	done
+}
+export -f tcncurlloop
 
 #----------------------------------------------------
 
