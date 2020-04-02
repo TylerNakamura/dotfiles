@@ -47,13 +47,32 @@ function tcngetfilebirthday() {
 		getfileinfod=$(GetFileInfo -d $1 | cut -f 1 -d " ")
 
 		# year
-		yearf=$(echo $getfileinfod | cut -f 3 -d "/")
+		yeard=$(echo $getfileinfod | cut -f 3 -d "/")
 		# month
-		monthf=$(echo $getfileinfod | cut -f 1 -d "/")
+		monthd=$(echo $getfileinfod | cut -f 1 -d "/")
 		# day
-		dayf=$(echo $getfileinfod | cut -f 2 -d "/")
+		dayd=$(echo $getfileinfod | cut -f 2 -d "/")
 
-		echo "$yearf-$monthf-$dayf"
+		dated="$yeard-$monthd-$dayd"
+
+		getfileinfom=$(GetFileInfo -m $1 | cut -f 1 -d " ")
+
+		# year
+		yearm=$(echo $getfileinfom | cut -f 3 -d "/")
+		# month
+		monthm=$(echo $getfileinfom | cut -f 1 -d "/")
+		# day
+		daym=$(echo $getfileinfom | cut -f 2 -d "/")
+
+		datem="$yearm-$monthm-$daym"
+
+		if [[ "$dated" > "$datem" ]] ;
+		then
+			echo $datem
+		else
+			echo $dated
+		fi
+
 	fi
 }
 export -f tcngetfilebirthday
