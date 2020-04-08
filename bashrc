@@ -18,18 +18,9 @@ set -o vi
 # source: https://news.ycombinator.com/item?id=21317623&p=2
 export BASH_SILENCE_DEPRECATION_WARNING=1
 
-# philosophies
-# keep each function independent, list dependencies if otherwise
-# portability and cross platform support is highest priority
-
-#----------------------------------------------------
-
-# DOC FORMAT (Use for below functions)
-
-# myfunction()
-# DESCRIPTION:
-# USAGE:
-# SOURCES:
+# Philosophies
+# - keep each function independent, list dependencies if otherwise
+# - portability and cross platform support is highest priority
 
 #----------------------------------------------------
 
@@ -38,6 +29,7 @@ export BASH_SILENCE_DEPRECATION_WARNING=1
 #   tyler$ tcngetfilebirthday myfile.txt
 #   2020-03-16
 #
+# Prints out the earliest known date of any given file
 # This one is special because it is cross platform (mac and linux)
 # it also just defaults to iso8601 format (just date)
 # it also makes assumptions about what the "creation date" is
@@ -83,13 +75,14 @@ export -f tcngetfilebirthday
 
 #----------------------------------------------------
 
-# mac date command doesn't have iso output
-# how stupid is that
+# macOS date command doesn't have iso output flag
 # source: https://stackoverflow.com/questions/7216358/date-command-on-os-x-doesnt-have-iso-8601-i-option
 alias tcnmacisodate="date -u +'%Y-%m-%dT%H:%M:%SZ'"
 
 #----------------------------------------------------
 
+# uses `uname` to try to determine the OS
+#
 # USAGE:
 #
 #   tyler$ tcngetos
@@ -130,20 +123,23 @@ export -f tcnk8stestpod
 # clean up OS things
 function tcncleanup() {
   # if downloads and desktop directories exist, move everything from downloads to the desktop
+  # downloads folders are dumb and stuffs accumlates too much
   [ -d ~/Downloads ] && [ -d ~/Desktop ] && mv ~/Downloads/* ~/Desktop/
 
   # if bash history exists, delete it
   [ -f ~/.bash_history ] && rm ~/.bash_history
 
-  #possible ideas
-  # if trash exists (macos), delete everything inside of it
+  # possible ideas
+  # if trash (folder) exists, delete everything inside of it
+  # not sure how to do this one yet
 }
 export -f tcncleanup
 
 #----------------------------------------------------
 
-# prints in CSV
-# useful for monitoring and testing "intermittent" issues
+# tests for intermittent HTTP errors or slowness
+# prints curl testing in CSV format for easy parsing
+#
 # USAGE:
 #      user$: tcncurlloop google.com
 #
@@ -164,7 +160,7 @@ export -f tcncurlloop
 
 #----------------------------------------------------
 
-# curl with statistics and info
+# curl with as much useful information as possible
 alias tcninfocurl="
 curl -o /dev/null -vs -w \
 '
@@ -195,9 +191,9 @@ speed_upload:       %{speed_upload} bytes per second
 
 # GCP web server
 # Creates a functioning web server in us-central1-a (for now)
-# still a WIP
 # I would like it to start a Linux server serving both 80 and 443
 # it should return the hostname in the /
+# TODO currently only starts a http server, need to get a self signed cert going here
 function tcngcpwebserver() {
     VMNAME=`date +'tcn-webserver-%F-%k-%M-%S'`
 
@@ -230,7 +226,7 @@ export -f tcngcpwebserver
 
 #----------------------------------------------------
 
-# list block devices
+# list block devices in a beautiful format
 # source: https://www.digitalocean.com/community/tutorials/how-to-create-raid-arrays-with-mdadm-on-ubuntu-16-04
 alias tcnlistblockdevices="lsblk -o NAME,SIZE,FSTYPE,TYPE,MOUNTPOINT"
 
@@ -241,21 +237,26 @@ alias tcnfileextensionsrecursive="find . -type f | sed 's/^.*\(\.[a-zA-Z0-9][a-z
 
 #----------------------------------------------------
 
+# linux command to switch the left/right designations for monitors
 # http://unix.stackexchange.com/questions/10589/how-can-i-swap-my-two-screens-left-to-right
 alias tcnswitchmonitor="xrandr --output HDMI-0 --left-of DVI-I-0"
 
 #----------------------------------------------------
 
 # http://askubuntu.com/questions/370786/how-to-convert-avi-xvid-to-mkv-or-mp4-h264
+# converts AVI video files to MP4
 alias tcnavitomp4="avconv -i test.avi -c:v libx264 -c:a copy outputfile.mp4"
 
 #----------------------------------------------------
 
 # askubuntu.com/questions/39180/pdf-to-mobi-convertor
+# converts PDF to mobi files
+# TODO, create a function here and take in an argument
 alias tcnconverttomobi="ebook-converter document.pdf .mobi"
 
 #----------------------------------------------------
 
+# converts CR2 files to JPGs
 # This will output (not replace) the file with a new extension.
 # foo.CR2 exported to foo.png
 alias tcncr2tojpg="ufraw-batch --out-type jpg *.CR2"
@@ -266,12 +267,14 @@ alias tcncr2tojpg="ufraw-batch --out-type jpg *.CR2"
 # source: https://unix.stackexchange.com/questions/46322/how-can-i-recursively-delete-empty-directories-in-my-home-directory
 # most likely to work on Linux, not sure about macOS
 alias tcnrprintemptydir="find . -type d -empty -print"
+
+# TODO: DANGER, maybe add some safeguards here?
 alias tcnrdeleteemptydir="find . -type d -empty -delete"
 
 #----------------------------------------------------
 
-# make an attempt to get the video in an mp4 in best quality. If that fails, fall back to whatever the default is
-
+# make an attempt to get the video in an mp4 and in best quality.
+# If that fails, fall back to whatever the default is
 function tcnyoutubedl() {
   # attempt to download it in my preferred format
   youtube-dl -f \"bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best/mp4\" $1
@@ -284,12 +287,13 @@ function tcnyoutubedl() {
 }
 export -f tcnyoutubedl
 
+# designated command for downloading music from youtube
 # source: https://askubuntu.com/questions/634584/how-to-download-youtube-videos-as-a-best-quality-audio-mp3-using-youtube-dl
 alias tcnyoutubedlmusic='youtube-dl -f bestaudio --extract-audio --audio-format mp3 --audio-quality 0'
 
 #----------------------------------------------------
 
-# TODO, docs needed
+# TODO, docs and safeguards needed
 # DANGER, this will actually touch your FS,
 # it's currently not accepting dir input, only runs on . (see the $PWD flag below)
 function tcnadddates() {
@@ -319,7 +323,7 @@ alias tcnmacrenamescreenshots='rename "s/Screen\ Shot\ //" *.png'
 
 # takes a directory tree and flattens it
 #/dir1
-#   /dir2 
+#   /dir2
 #      |
 #       --- file1
 #      |
@@ -352,7 +356,7 @@ function tcnflattendirectory() {
   then
     # bring all files to the top
     find $1 -mindepth 2 -type f -exec mv -i '{}' $1 ';'
-    
+
     # remove all empty directories remaining
     find $1 -type d -empty -delete
   fi
