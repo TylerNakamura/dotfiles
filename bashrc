@@ -147,8 +147,13 @@ export -f tcncleanup
 # USAGE:
 #      user$: tcncurlloop google.com
 #
-# what happens when it times out? what is the output TODO
-# the date command is like that for iso support on macos (date on macos doesn't have a flag for iso output)
+# OUTPUT:
+#      301, 0.067804, 2020-04-02T22:10:06Z
+#      301, 0.038223, 2020-04-02T22:10:07Z
+#      301, 0.041026, 2020-04-02T22:10:08Z
+#
+#      (status code), (total time), (iso timestamp)
+#
 function tcncurlloop(){
 	while true
 		do curl -w '%{http_code}, %{time_total}, ' $1 --connect-timeout 3 -o /dev/null --silent; date -u +"%Y-%m-%dT%H:%M:%SZ"
@@ -161,7 +166,7 @@ export -f tcncurlloop
 
 # curl with statistics and info
 alias tcninfocurl="
-curl -o /dev/null -Lvs -w \
+curl -o /dev/null -vs -w \
 '
 time_appconnect:    %{time_appconnect}s (start until the SSL/SSH/etc connect/handshake to the remote host was completed)
 time_connect:       %{time_connect}s (start until the TCP connect to the remote host (or proxy) was completed)
