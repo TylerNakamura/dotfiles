@@ -12,14 +12,17 @@
 #                                  #
 # # # # # # # # # # # # # # # # # #
 
-# Philosophies
-# - keep each function independent, list dependencies if otherwise
+# Core Philosophies
 # - portability and cross platform support is highest priority
+# - keep each function independent, list dependencies if otherwise
+# - readability > brevity
 
 # macOS to stop giving warnings upon using bash
 # source: https://news.ycombinator.com/item?id=21317623&p=2
 export BASH_SILENCE_DEPRECATION_WARNING=1
 
+# vi mode
+# the greatest feature of bash
 set -o vi
 
 # -a - all files, even hidden ones
