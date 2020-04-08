@@ -12,17 +12,86 @@
 #                                  #
 # # # # # # # # # # # # # # # # # #
 
-set -o vi
+# Philosophies
+# - keep each function independent, list dependencies if otherwise
+# - portability and cross platform support is highest priority
 
 # macOS to stop giving warnings upon using bash
 # source: https://news.ycombinator.com/item?id=21317623&p=2
 export BASH_SILENCE_DEPRECATION_WARNING=1
 
-# Philosophies
-# - keep each function independent, list dependencies if otherwise
-# - portability and cross platform support is highest priority
+set -o vi
+
+# -a - all files, even hidden ones
+# -l - long list
+# -h - human readable
+# -i - inode numbers
+# -t - sort by time modified
+alias ls="ls -alhit"
 
 #----------------------------------------------------
+
+# macOS date command doesn't have iso output flag
+# source: https://stackoverflow.com/questions/7216358/date-command-on-os-x-doesnt-have-iso-8601-i-option
+alias tcnmacisodate="date -u +'%Y-%m-%dT%H:%M:%SZ'"
+
+#----------------------------------------------------
+
+# list block devices in a beautiful format
+# source: https://www.digitalocean.com/community/tutorials/how-to-create-raid-arrays-with-mdadm-on-ubuntu-16-04
+alias tcnlistblockdevices="lsblk -o NAME,SIZE,FSTYPE,TYPE,MOUNTPOINT"
+
+#----------------------------------------------------
+
+# list all file extensions recursively, ordered, starting down from the current directory
+alias tcnfileextensionsrecursive="find . -type f | sed 's/^.*\(\.[a-zA-Z0-9][a-zA-Z0-9][a-zA-Z0-9]\).*$/\1/' | sort | uniq -c | sort -n | tac"
+
+#----------------------------------------------------
+
+# linux command to switch the left/right designations for monitors
+# http://unix.stackexchange.com/questions/10589/how-can-i-swap-my-two-screens-left-to-right
+alias tcnswitchmonitor="xrandr --output HDMI-0 --left-of DVI-I-0"
+
+#----------------------------------------------------
+
+# http://askubuntu.com/questions/370786/how-to-convert-avi-xvid-to-mkv-or-mp4-h264
+# converts AVI video files to MP4
+alias tcnavitomp4="avconv -i test.avi -c:v libx264 -c:a copy outputfile.mp4"
+
+#----------------------------------------------------
+
+# askubuntu.com/questions/39180/pdf-to-mobi-convertor
+# converts PDF to mobi files
+# TODO, create a function here and take in an argument
+alias tcnconverttomobi="ebook-converter document.pdf .mobi"
+
+#----------------------------------------------------
+
+# converts CR2 files to JPGs
+# This will output (not replace) the file with a new extension.
+# foo.CR2 exported to foo.png
+alias tcncr2tojpg="ufraw-batch --out-type jpg *.CR2"
+
+#----------------------------------------------------
+
+# Recursively remove empty directories
+# source: https://unix.stackexchange.com/questions/46322/how-can-i-recursively-delete-empty-directories-in-my-home-directory
+# most likely to work on Linux, not sure about macOS
+alias tcnrprintemptydir="find . -type d -empty -print"
+
+# TODO: DANGER, maybe add some safeguards here?
+#alias tcnrdeleteemptydir="find . -type d -empty -delete"
+
+#----------------------------------------------------
+
+# source: https://stackoverflow.com/questions/1657017/how-to-squash-all-git-commits-into-one
+# squashes the WHOLE current tree into one
+# CAREFUL
+alias tcngitsquashallcommitsintoone='git reset $(git commit-tree HEAD^{tree} -m "A new start")'
+
+#----------------------------------------------------
+
+alias tcnmacrenamescreenshots='rename "s/Screen\ Shot\ //" *.png'
 
 # USAGE:
 #
@@ -40,44 +109,48 @@ function tcngetfilebirthday() {
 		echo "you're on Linux! This code has not yet been written"
 		exit 1;
 	elif [ "$(tcngetos)" == "macos" ]; then
-		getfileinfod=$(GetFileInfo -d $1 | cut -f 1 -d " ")
+		# there are several dates in which you can get the "date" of a file
+		# this function will attempt all of them, and choose the earliest known date of the photo
 
+		# list of all possible dates (will be sorted at the end)
+		datelist=""
+
+		# macos file system date
+		getfileinfod=$(GetFileInfo -d $1 | cut -f 1 -d " ")
 		# year
 		yeard=$(echo $getfileinfod | cut -f 3 -d "/")
 		# month
 		monthd=$(echo $getfileinfod | cut -f 1 -d "/")
 		# day
 		dayd=$(echo $getfileinfod | cut -f 2 -d "/")
-
 		dated="$yeard-$monthd-$dayd"
+		# add this known date to the list
+		datelist="$dated\n"
 
+		# macos file system modification date
 		getfileinfom=$(GetFileInfo -m $1 | cut -f 1 -d " ")
-
 		# year
 		yearm=$(echo $getfileinfom | cut -f 3 -d "/")
 		# month
 		monthm=$(echo $getfileinfom | cut -f 1 -d "/")
 		# day
 		daym=$(echo $getfileinfom | cut -f 2 -d "/")
-
 		datem="$yearm-$monthm-$daym"
+		# also add this known date to the list
+		datelist="$datelist$datem\n"
 
-		if [[ "$dated" > "$datem" ]] ;
-		then
-			echo $datem
-		else
-			echo $dated
-		fi
+		# grab all of the exif dates that match "CreationDate"
+		# will sort through all of them, but might as well add them all
+		exifdates=$(mdls $1 | grep CreationDate | awk '{print $3}')
+		# add to our list
+		datelist="$datelist$exifdates\n"
 
+		# need to use printf here because it will render the new lines instead of the literal \n
+		# print the list, sort it, then just take the earliest one
+		printf $mystring | sort | head -n 1
 	fi
 }
 export -f tcngetfilebirthday
-
-#----------------------------------------------------
-
-# macOS date command doesn't have iso output flag
-# source: https://stackoverflow.com/questions/7216358/date-command-on-os-x-doesnt-have-iso-8601-i-option
-alias tcnmacisodate="date -u +'%Y-%m-%dT%H:%M:%SZ'"
 
 #----------------------------------------------------
 
@@ -226,53 +299,6 @@ export -f tcngcpwebserver
 
 #----------------------------------------------------
 
-# list block devices in a beautiful format
-# source: https://www.digitalocean.com/community/tutorials/how-to-create-raid-arrays-with-mdadm-on-ubuntu-16-04
-alias tcnlistblockdevices="lsblk -o NAME,SIZE,FSTYPE,TYPE,MOUNTPOINT"
-
-#----------------------------------------------------
-
-# list all file extensions recursively, ordered, starting down from the current directory
-alias tcnfileextensionsrecursive="find . -type f | sed 's/^.*\(\.[a-zA-Z0-9][a-zA-Z0-9][a-zA-Z0-9]\).*$/\1/' | sort | uniq -c | sort -n | tac"
-
-#----------------------------------------------------
-
-# linux command to switch the left/right designations for monitors
-# http://unix.stackexchange.com/questions/10589/how-can-i-swap-my-two-screens-left-to-right
-alias tcnswitchmonitor="xrandr --output HDMI-0 --left-of DVI-I-0"
-
-#----------------------------------------------------
-
-# http://askubuntu.com/questions/370786/how-to-convert-avi-xvid-to-mkv-or-mp4-h264
-# converts AVI video files to MP4
-alias tcnavitomp4="avconv -i test.avi -c:v libx264 -c:a copy outputfile.mp4"
-
-#----------------------------------------------------
-
-# askubuntu.com/questions/39180/pdf-to-mobi-convertor
-# converts PDF to mobi files
-# TODO, create a function here and take in an argument
-alias tcnconverttomobi="ebook-converter document.pdf .mobi"
-
-#----------------------------------------------------
-
-# converts CR2 files to JPGs
-# This will output (not replace) the file with a new extension.
-# foo.CR2 exported to foo.png
-alias tcncr2tojpg="ufraw-batch --out-type jpg *.CR2"
-
-#----------------------------------------------------
-
-# Recursively remove empty directories
-# source: https://unix.stackexchange.com/questions/46322/how-can-i-recursively-delete-empty-directories-in-my-home-directory
-# most likely to work on Linux, not sure about macOS
-alias tcnrprintemptydir="find . -type d -empty -print"
-
-# TODO: DANGER, maybe add some safeguards here?
-alias tcnrdeleteemptydir="find . -type d -empty -delete"
-
-#----------------------------------------------------
-
 # make an attempt to get the video in an mp4 and in best quality.
 # If that fails, fall back to whatever the default is
 function tcnyoutubedl() {
@@ -307,17 +333,6 @@ function tcnadddates() {
   done
 }
 export -f tcnadddates
-
-#----------------------------------------------------
-
-# source: https://stackoverflow.com/questions/1657017/how-to-squash-all-git-commits-into-one
-# squashes the WHOLE current tree into one
-# CAREFUL
-alias tcngitsquashallcommitsintoone='git reset $(git commit-tree HEAD^{tree} -m "A new start")'
-
-#----------------------------------------------------
-
-alias tcnmacrenamescreenshots='rename "s/Screen\ Shot\ //" *.png'
 
 #----------------------------------------------------
 
