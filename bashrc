@@ -12,6 +12,11 @@
 #                                  #
 # # # # # # # # # # # # # # # # # #
 
+# Purpose
+# - Documentation
+# - Toolset
+# - Notepad 
+
 # Core Philosophies
 # - portability and cross platform support is highest priority
 # - keep each function independent, list dependencies if otherwise
@@ -19,6 +24,7 @@
 
 # macOS to stop giving warnings upon using bash
 # source: https://news.ycombinator.com/item?id=21317623&p=2
+# TODO add a macos guard here
 export BASH_SILENCE_DEPRECATION_WARNING=1
 
 # vi mode
