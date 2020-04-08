@@ -15,12 +15,15 @@
 # Purpose
 # - Documentation
 # - Toolset
-# - Notepad 
+# - Notepad
 
 # Core Philosophies
 # - portability and cross platform support is highest priority
 # - keep each function independent, list dependencies if otherwise
 # - readability > brevity
+
+# TODO
+# - a function that is a "check with user to make sure they really want to proceed"
 
 # macOS to stop giving warnings upon using bash
 # source: https://news.ycombinator.com/item?id=21317623&p=2
