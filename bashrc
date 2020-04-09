@@ -30,6 +30,12 @@
 # TODO add a macos guard here
 export BASH_SILENCE_DEPRECATION_WARNING=1
 
+# sometimes mac is dumb and doesnt repeat keys
+# source: https://www.idownloadblog.com/2015/01/14/how-to-enable-key-repeats-on-your-mac/
+# TODO, add guard and mac check
+# defaults write NSGlobalDomain ApplePressAndHoldEnabled -bool false
+# can make an if statement with this: defaults read NSGlobalDomain ApplePressAndHoldEnabled
+
 # vi mode
 # the greatest feature of bash
 set -o vi
@@ -119,7 +125,7 @@ alias tcnmacrenamescreenshots='rename "s/Screen\ Shot\ //" *.png'
 function tcngetfilebirthday() {
 	if [ "$(tcngetos)" == "linux" ]; then
 		echo "you're on Linux! This code has not yet been written"
-		exit 1;
+		return 1;
 	elif [ "$(tcngetos)" == "macos" ]; then
 		# there are several dates in which you can get the "date" of a file
 		# this function will attempt all of them, and choose the earliest known date of the photo
