@@ -210,16 +210,18 @@ function tcntask() {
 	# always synchronize
 	task syn
 
+	clear
+
 	# if it's the weekend, don't show work tasks
 	if [[ $(date +%u) -gt 5 ]] ; then
-		echo "IT'S THE WEEKEND, SHOWING HOME TASKS"
+		echo "==========HOME TASKS=========="
 		task next -work
 	# if its outside of working(ish) hours (8am - 6pm), don't show work tasks
 	elif [[ $(date +%H) -gt 8 && $(date +%H) -lt 18 ]] ;  then
-		echo "IT'S WORKING HOURS TIME, SHOWING WORK TASKS"
+		echo "==========WORK TASKS=========="
 		task next -home
 	else
-		echo "IT'S NOT WORKING HOURS TIME, SHOWING HOME TASKS"
+		echo "==========HOME TASKS=========="
 		task next -work
 	fi
 }
