@@ -45,7 +45,14 @@ set -o vi
 # -h - human readable
 # -i - inode numbers
 # -t - sort by time modified
-alias ls="ls -alhit"
+alias ls="ls -lhit"
+
+#----------------------------------------------------
+
+# get dates of yesterday and tomorrow
+# useful for scripting
+alias tcntomorrow="date -v+1d +%Y-%m-%d"
+alias tcnyesterday="date -v-1d +%Y-%m-%d"
 
 #----------------------------------------------------
 
