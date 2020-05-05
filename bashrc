@@ -224,14 +224,18 @@ function tcntask() {
 
 	# if it's the weekend, don't show work tasks
 	if [[ $(date +%u) -gt 5 ]] ; then
-		echo "==========HOME TASKS=========="
+		echo
+		echo "-=-=-=-=-=-=-=-=-=-=-=-=-=HOME TASKS-=-=-=-=-=-=-=-=-=-=-=-=-=-=-"
 		task next -work
 	# if its outside of working(ish) hours (8am - 6pm), don't show work tasks
-	elif [[ $(date +%H) -gt 8 && $(date +%H) -lt 18 ]] ;  then
-		echo "==========WORK TASKS=========="
+	# the sed will strip off leading zeroes
+	elif [[ $(date +%H | sed 's/^0*//') -gt 7 && $(date +%H | sed 's/^0*//') -lt 18 ]] ;  then
+		echo
+		echo "-=-=-=-=-=-=-=-=-=-=-=-=-=WORK TASKS-=-=-=-=-=-=-=-=-=-=-=-=-=-=-"
 		task next -home
 	else
-		echo "==========HOME TASKS=========="
+		echo
+		echo "-=-=-=-=-=-=-=-=-=-=-=-=-=HOME TASKS-=-=-=-=-=-=-=-=-=-=-=-=-=-=-"
 		task next -work
 	fi
 }
