@@ -172,6 +172,7 @@ function tcngetfilebirthday() {
 
 		# need to use printf here because it will render the new lines instead of the literal \n
 		# print the list, sort it, then just take the earliest one
+		echo "HERE IT ISSSSSS"
 		printf $mystring | sort | head -n 1
 	fi
 }
@@ -218,6 +219,8 @@ function tcntask() {
 	task syn
 
 	clear
+
+	cal -3
 
 	# if it's the weekend, don't show work tasks
 	if [[ $(date +%u) -gt 5 ]] ; then
