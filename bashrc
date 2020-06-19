@@ -222,21 +222,22 @@ function tcntask() {
 
 	cal -3
 
+	# TODO need to be fixed!
 	# if it's the weekend, don't show work tasks
 	if [[ $(date +%u) -gt 5 ]] ; then
 		echo
 		echo "-=-=-=-=-=-=-=-=-=-=-=-=-=HOME TASKS-=-=-=-=-=-=-=-=-=-=-=-=-=-=-"
-		task next -work
+		task next
 	# if its outside of working(ish) hours (8am - 6pm), don't show work tasks
 	# the sed will strip off leading zeroes
 	elif [[ $(date +%H | sed 's/^0*//') -gt 7 && $(date +%H | sed 's/^0*//') -lt 18 ]] ;  then
 		echo
 		echo "-=-=-=-=-=-=-=-=-=-=-=-=-=WORK TASKS-=-=-=-=-=-=-=-=-=-=-=-=-=-=-"
-		task next -home
+		task next
 	else
 		echo
 		echo "-=-=-=-=-=-=-=-=-=-=-=-=-=HOME TASKS-=-=-=-=-=-=-=-=-=-=-=-=-=-=-"
-		task next -work
+		task next
 	fi
 }
 export -f tcntask
