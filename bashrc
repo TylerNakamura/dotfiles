@@ -220,12 +220,35 @@ function tcntask() {
 
 	clear
 
+	# print monthly productivity chart
+	task ghistory.monthly
+
+	# print 3 months of the calendar
 	cal -3
+		
+	# check started tasks
+	task active > /dev/null 2>&1
+	# if there are tasks started, print that
+	if [ $? -eq 0 ]
+	then
+		task active
+  		return 0
+	fi
+
+
+	# check overdue tasks
+	task overdue > /dev/null 2>&1
+	# if there is stuff overdue, print that
+	if [ $? -eq 0 ]
+	then
+		task overdue
+  		return 0
+	fi
 
 	# TODO need to be fixed!
 	# if it's the weekend, don't show work tasks
 	if [[ $(date +%u) -gt 5 ]] ; then
-		echo
+	echo
 		echo "-=-=-=-=-=-=-=-=-=-=-=-=-=HOME TASKS-=-=-=-=-=-=-=-=-=-=-=-=-=-=-"
 		task next
 	# if its outside of working(ish) hours (8am - 6pm), don't show work tasks
