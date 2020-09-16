@@ -120,7 +120,7 @@ alias tcnmacrenamescreenshots='rename "s/Screen\ Shot\ //" *.png'
 
 # USAGE:
 #
-#   tyler$ tcngetfilebirthday myfile.txt
+#   tyler$ tcnfilegetbirthday myfile.txt
 #   2020-03-16
 #
 # Prints out the earliest known date of any given file
@@ -129,7 +129,7 @@ alias tcnmacrenamescreenshots='rename "s/Screen\ Shot\ //" *.png'
 # it also makes assumptions about what the "creation date" is
 # Linux FS does not store creation date, so taking the earliest of 3 dates:
 # access/modify/read
-function tcngetfilebirthday() {
+function tcnfilegetbirthday() {
 	if [ "$(tcngetos)" == "linux" ]; then
 		echo "you're on Linux! This code has not yet been written"
 		return 1;
@@ -172,11 +172,10 @@ function tcngetfilebirthday() {
 
 		# need to use printf here because it will render the new lines instead of the literal \n
 		# print the list, sort it, then just take the earliest one
-		echo "HERE IT ISSSSSS"
-		printf $mystring | sort | head -n 1
+		printf "$datelist" | sort | head -n 1
 	fi
 }
-export -f tcngetfilebirthday
+export -f tcnfilegetbirthday
 
 #----------------------------------------------------
 
@@ -405,17 +404,22 @@ alias tcnyoutubedlmusic='youtube-dl -f bestaudio --extract-audio --audio-format 
 # TODO, docs and safeguards needed
 # DANGER, this will actually touch your FS,
 # it's currently not accepting dir input, only runs on . (see the $PWD flag below)
-function tcnadddates() {
-  for targetfile in $(find "$(pwd)" -type f)
+function tcndirprependiso() {
+  # default $IFS includes spaces as delimitters, which is bugged for files with multi word
+  # save for laterIFS=$'\n'; for targetfile in $(find "$(pwd)" -type f)
+  for targetfile in ./*
   do
-    basefile=$(basename $targetfile)
-    filepath=$(dirname $targetfile)
-    newfilename=$(tcngetfilebirthday $basefile)-$basefile
-    mv "$filepath/$basefile" "$filepath/$newfilename"
-    echo " mv $filepath/$basefile $filepath/$newfilename"
+    if [ -f $targetfile ]; then
+      basefile=$(basename $targetfile)
+      filepath=$(dirname $targetfile)
+      newfilename=$(tcnfilegetbirthday $basefile)-$basefile
+      mv "$filepath/$basefile" "$filepath/$newfilename"
+      echo " mv $filepath/$basefile $filepath/$newfilename"
+    fi
   done
 }
-export -f tcnadddates
+export -f tcndirprependiso
+# don't feel comfortable exporting because it cannot handle files with spaces
 
 #----------------------------------------------------
 
@@ -434,36 +438,70 @@ export -f tcnadddates
 #   --- file2
 #
 # source: https://unix.stackexchange.com/questions/52814/flattening-a-nested-directory/52816#
-function tcnflattendirectory() {
-  if [ ! $# -eq 1 ]
-  then
-    echo "Please specify one directory path as an argument"
-    return
-  fi
+function tcndirflatten() {
+  # bring all files to the top
+  find . -mindepth 2 -type f -exec mv -i '{}' . ';'
 
-  # if the argument supplied is not a directory
-  # exit the script
-  if [ ! -d "$1" ]; then
-    echo "$1 is not a directory!"
-    return
-  fi
-
-  read -p "DANGER. YOU ARE ABOUT TO FLATTEN THE DIRECTORY $1 PERMANENTLY. IS THIS REALLY WHAT YOU WANT TO DO? [y, n] " -n 1 -r
-  echo
-  if [[ $REPLY =~ ^[Yy]$ ]]
-  then
-    # bring all files to the top
-    find $1 -mindepth 2 -type f -exec mv -i '{}' $1 ';'
-
-    # remove all empty directories remaining
-    find $1 -type d -empty -delete
-  fi
+  # remove all empty directories remaining
+  find . -type d -empty -delete
 }
-export -f tcnflattendirectory
+#export -f tcndirflatten
+
+#----------------------------------------------------
+
+# WARNING: spaces with file names will bug this
+function tcndirprependmd5() {
+  for f in ./*
+  do
+    if [ -f $f ]; then
+      basefile=$(basename $f)
+      filepath=$(dirname $f)
+      hash=$(md5 -q $f)
+
+      echo "mv $filepath/$basefile $filepath/$hash-$basefile"
+
+      mv "$filepath/$basefile" "$filepath/$hash-$basefile"
+  fi
+  done
+}
+# don't feel comfortable exporting this because it cannot handle files with spaces in the name
+
+#----------------------------------------------------
+
+# source: https://vitux.com/how-to-replace-spaces-in-filenames-with-underscores-on-the-linux-shell/
+function tcndirspacetodash() {
+  for f in ./*
+  do
+    new="${f// /-}"
+    if [ "$new" != "$f" ]
+    then
+      # if that file name already exists
+      if [ -e "$new" ]
+      then
+        echo not renaming \""$f"\" because \""$new"\" already exists
+        echo "potential for data loss!"
+        return 1
+      else
+        echo "mv $f $new"
+        mv "$f" "$new"
+    fi
+  fi
+done
+}
+#export -f tcndirspacetodash
+
+#----------------------------------------------------
+
+function tcndirmediaprep() {
+   tcndirflatten
+   tcndirspacetodash
+   tcndirprependmd5
+   tcndirprependiso
+   
+}
+export -f tcndirmediaprep
 
 #----------------------------------------------------
 
 # TODO - format this better
 # favorite wireshark filters
-# dns queries with no responses:
-#     dns && (dns.flags.response == 0) && ! dns.response_in
