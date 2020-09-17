@@ -140,6 +140,8 @@ function tcnfilegetbirthday() {
 		# list of all possible dates (will be sorted at the end)
 		datelist=""
 
+		# FILESYSTEM DATA SOURCE
+
 		# macos file system date
 		getfileinfod=$(GetFileInfo -d $1 | cut -f 1 -d " ")
 		# year
@@ -164,10 +166,24 @@ function tcnfilegetbirthday() {
 		# also add this known date to the list
 		datelist="$datelist$datem\n"
 
+		# FILE NAME DATA SOURCE
+		#TODO make this an optional feature (maybe with a flag?)
+		#TODO add other possible formats (slashes and dots could also be used)
+		# search for an iso date in the name of the file
+		# ie 2020-09-20cat.png would be 2020-09-20
+		grepoutput=$(echo $1 | grep -o '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]')
+		# if grep output was found from the filename
+		if [ $? -eq 0 ]
+		then
+			# append to list of possible dates
+			datelist="$datelist$grepoutput\n"
+		fi
+
+		# EXIF DATA SOURCE
 		# grab all of the exif dates that match "CreationDate"
 		# will sort through all of them, but might as well add them all
 		exifdates=$(mdls $1 | grep CreationDate | awk '{print $3}')
-		# add to our list
+		# append to list of possible dates
 		datelist="$datelist$exifdates\n"
 
 		# need to use printf here because it will render the new lines instead of the literal \n
