@@ -513,11 +513,25 @@ function tcndirmediaprep() {
    tcndirspacetodash
    tcndirprependmd5
    tcndirprependiso
-   
 }
 export -f tcndirmediaprep
 
 #----------------------------------------------------
+
+function tcnsource() {
+	#TODO, make this an env variable saved at the top
+   source ~/dev/dotfiles/bashrc
+}
+export -f tcnsource
+
+#----------------------------------------------------
+
+function tcngitpush() {
+	git add .
+	git commit
+	git push origin master
+}
+export -f tcngitpush
 
 # TODO - format this better
 # favorite wireshark filters
