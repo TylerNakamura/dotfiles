@@ -1,4 +1,4 @@
-
+#!/bin/bash
 # # # # # # # # # # # # # # # # # #
 #                                  #
 #  $$$$$$$$\  $$$$$$\  $$\   $$\   #
@@ -105,6 +105,7 @@ alias tcncr2tojpg="ufraw-batch --out-type jpg *.CR2"
 function tcnsource() {
 	#TODO, make this an env variable saved at the top
    source ~/dev/dotfiles/bashrc
+   echo "bashrc reloaded"
 }
 export -f tcnsource
 
@@ -203,9 +204,36 @@ function tcngetos() {
 }
 export -f tcngetos
 
+# source: https://gist.github.com/zachbrowne/8bc414c9f30192067831fafebd14255c
+# TODO/WARNING
+# cannot handle files with spaces in names!!!
+function tcnextract()
+{
+	for archive in $*; do
+		if [ -f $archive ] ; then
+			case $archive in
+				*.tar.bz2)   tar xvjf $archive    ;;
+				*.tar.gz)    tar xvzf $archive    ;;
+				*.bz2)       bunzip2 $archive     ;;
+				*.rar)       rar x $archive       ;;
+				*.gz)        gunzip $archive      ;;
+				*.tar)       tar xvf $archive     ;;
+				*.tbz2)      tar xvjf $archive    ;;
+				*.tgz)       tar xvzf $archive    ;;
+				*.zip)       unzip $archive       ;;
+				*.Z)         uncompress $archive  ;;
+				*.7z)        7z x $archive        ;;
+				*)           echo "don't know how to extract '$archive'..." ;;
+			esac
+		else
+			echo "'$archive' is not a valid file!"
+		fi
+	done
+}
+
 # Generate a pseudo UUID in bash
 # source: https://serverfault.com/a/597626
-tcnuuid()
+function tcnuuid()
 {
     local N B T
 
@@ -427,11 +455,11 @@ function tcngcpwebserver() {
 export -f tcngcpwebserver
 
 #~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~
-#                                       _             _                  _   _ 
-#               _   _    ___    _   _  | |_   _   _  | |__     ___    __| | | |
-#              | | | |  / _ \  | | | | | __| | | | | | '_ \   / _ \  / _` | | |
-#              | |_| | | (_) | | |_| | | |_  | |_| | | |_) | |  __/ | (_| | | |   youtube-dl
-#               \__, |  \___/   \__,_|  \__|  \__,_| |_.__/   \___|  \__,_| |_|
+#                                       _             _                 _   _ 
+#               _   _    ___    _   _  | |_   _   _  | |__    ___    __| | | |
+#              | | | |  / _ \  | | | | | __| | | | | | '_ \  / _ \  / _` | | |
+#              | |_| | | (_) | | |_| | | |_  | |_| | | |_) ||  __/ | (_| | | |   youtube-dl
+#               \__, |  \___/   \__,_|  \__|  \__,_| |_.__/  \___|  \__,_| |_|
 #               |___/                                                          
 #~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~
 
