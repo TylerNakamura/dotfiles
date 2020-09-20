@@ -27,12 +27,16 @@
 # TODO
 # - a function that is a "check with user to make sure they really want to proceed"
 # - a "filter for keyword" functionality in the tcndirmediaprep
-# - disallow tcnmediaprep from being run outside of desktop or home directory
+# - disallow tcnmediaprep from being run outside of desktop or home directory (function tcnsafedirectory)
 # - tcnnethostdiagnosticsgenerate
 # - tcnnetinterpratediagnostics
 # - extract tool (with tooltips to help remember)
 # - bashrc to check itself to see if it is out of date with bashrc.tylernakamura.com
-# - DSSTORE killer
+# - function to lowercase extensions (ie JPG to jpg)
+# - image recognition to detect similar photos
+# - tcndirmediaprep having problems with MOV files
+# - tcndirmediaprep to separate photos and videos
+# - DSSTORE killer (maybe AAE files too?)
 
 #~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~
 
