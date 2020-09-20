@@ -22,6 +22,8 @@
 # - keep each function independent, list dependencies if otherwise
 # - readability > brevity
 
+# Graphics Generator: http://patorjk.com/software/taag/#p=display&h=0&v=1&f=Standard
+
 # TODO
 # - a function that is a "check with user to make sure they really want to proceed"
 # - a "filter for keyword" functionality in the tcndirmediaprep
@@ -29,13 +31,178 @@
 # - tcnnethostdiagnosticsgenerate
 # - tcnnetinterpratediagnostics
 # - extract tool (with tooltips to help remember)
+# - bashrc to check itself to see if it is out of date with bashrc.tylernakamura.com
+
+#~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~
 
 # ensure vim is default editor for programs
 # source: https://unix.stackexchange.com/a/73486
 export VISUAL=vim
 export EDITOR="$VISUAL"
 
-# macOS specific settings
+#~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~
+
+# vi mode
+set -o vi
+
+#~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~
+
+# -a - all files, even hidden ones
+# -l - long list
+# -h - human readable
+# -i - inode numbers
+# -t - sort by time modified
+alias ls="ls -lhit"
+
+#~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~
+
+# get dates of yesterday and tomorrow
+# useful for scripting
+# these can't be static env variables because the shell will be open longer than a day
+alias tcntomorrow="date -v+1d +%Y-%m-%d"
+alias tcnyesterday="date -v-1d +%Y-%m-%d"
+
+#~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~
+
+# list block devices in a beautiful format
+# source: https://www.digitalocean.com/community/tutorials/how-to-create-raid-arrays-with-mdadm-on-ubuntu-16-04
+alias tcnlistblockdevices="lsblk -o NAME,SIZE,FSTYPE,TYPE,MOUNTPOINT"
+
+#~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~
+
+# linux command to switch the left/right designations for monitors
+# http://unix.stackexchange.com/questions/10589/how-can-i-swap-my-two-screens-left-to-right
+alias tcnswitchmonitor="xrandr --output HDMI-0 --left-of DVI-I-0"
+
+#~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~
+
+# http://askubuntu.com/questions/370786/how-to-convert-avi-xvid-to-mkv-or-mp4-h264
+# converts AVI video files to MP4
+alias tcnavitomp4="avconv -i test.avi -c:v libx264 -c:a copy outputfile.mp4"
+
+#~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~
+
+# askubuntu.com/questions/39180/pdf-to-mobi-convertor
+# converts PDF to mobi files
+# TODO, create a function here and take in an argument
+alias tcnconverttomobi="ebook-converter document.pdf .mobi"
+
+#~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~
+
+# converts CR2 files to JPGs
+# This will output (not replace) the file with a new extension.
+# foo.CR2 exported to foo.png
+alias tcncr2tojpg="ufraw-batch --out-type jpg *.CR2"
+
+function tcnsource() {
+	#TODO, make this an env variable saved at the top
+   source ~/dev/dotfiles/bashrc
+}
+export -f tcnsource
+
+#~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~
+
+# clean up OS things
+function tcncleanup() {
+  # if downloads and desktop directories exist, move everything from downloads to the desktop
+  # downloads folders are dumb and stuffs accumlates too much
+  [ -d ~/Downloads ] && [ -d ~/Desktop ] && mv ~/Downloads/* ~/Desktop/
+
+  # if bash history exists, delete it
+  [ -f ~/.bash_history ] && rm ~/.bash_history
+
+  # possible ideas
+  # if trash (folder) exists, delete everything inside of it
+  # not sure how to do this one yet
+}
+export -f tcncleanup
+
+#~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~
+
+# tcntask
+# shows the appropriate tasks based on the time
+# source: https://stackoverflow.com/questions/3490032/how-to-check-if-today-is-a-weekend-in-bash
+function tcntask() {
+	# always synchronize
+	task syn
+
+	clear
+
+	# print monthly productivity chart
+	task ghistory.monthly
+
+	# print 3 months of the calendar
+	cal -3
+		
+	# check started tasks
+	task active > /dev/null 2>&1
+	# if there are tasks started, print that
+	if [ $? -eq 0 ]
+	then
+		task active
+  		return 0
+	fi
+
+	# check overdue tasks
+	task overdue > /dev/null 2>&1
+	# if there is stuff overdue, print that
+	if [ $? -eq 0 ]
+	then
+		task overdue
+  		return 0
+	fi
+
+	# TODO need to be fixed!
+	# if it's the weekend, don't show work tasks
+	if [[ $(date +%u) -gt 5 ]] ; then
+	echo
+		echo "-=-=-=-=-=-=-=-=-=-=-=-=-=HOME TASKS-=-=-=-=-=-=-=-=-=-=-=-=-=-=-"
+		task next
+	# if its outside of working(ish) hours (8am - 6pm), don't show work tasks
+	# the sed will strip off leading zeroes
+	elif [[ $(date +%H | sed 's/^0*//') -gt 7 && $(date +%H | sed 's/^0*//') -lt 18 ]] ;  then
+		echo
+		echo "-=-=-=-=-=-=-=-=-=-=-=-=-=WORK TASKS-=-=-=-=-=-=-=-=-=-=-=-=-=-=-"
+		task next
+	else
+		echo
+		echo "-=-=-=-=-=-=-=-=-=-=-=-=-=HOME TASKS-=-=-=-=-=-=-=-=-=-=-=-=-=-=-"
+		task next
+	fi
+}
+export -f tcntask
+
+
+#~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~
+
+# uses `uname` to try to determine the OS
+#
+# USAGE:
+#
+#   tyler$ tcngetos
+#   macos
+#
+function tcngetos() {
+	if [ "$(uname)" == "Darwin" ]; then
+		echo "macos"
+	elif [ "$(expr substr $(uname -s) 1 5)" == "Linux" ]; then
+		echo "linux"
+	elif [ "$(expr substr $(uname -s) 1 10)" == "MINGW32_NT" ]; then
+		echo "ming32"
+	elif [ "$(expr substr $(uname -s) 1 10)" == "MINGW64_NT" ]; then
+		echo "ming64"
+	fi
+}
+export -f tcngetos
+
+#~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~
+#        ,--./,-.                                 
+#       / #      \            _ __ ___     __ _    ___  
+#      |          |          | '_ ` _ \   / _` |  / __|
+#       \        /           | | | | | | | (_| | | (__       macOS Specific Settings
+#        `._,._,'            |_| |_| |_|  \__,_|  \___|
+#
+#~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~
 if [ "$(uname)" == "Darwin" ]; then
     # macOS to stop giving warnings upon using bash (I don't want to use zsh!)
 	# source: https://news.ycombinator.com/item?id=21317623&p=2
@@ -60,80 +227,14 @@ if [ "$(uname)" == "Darwin" ]; then
 	echo "macOS settings loaded"
 fi
 
-# vi mode
-set -o vi
-
-# -a - all files, even hidden ones
-# -l - long list
-# -h - human readable
-# -i - inode numbers
-# -t - sort by time modified
-alias ls="ls -lhit"
-
-#----------------------------------------------------
-
-# get dates of yesterday and tomorrow
-# useful for scripting
-# these can't be static env variables because the shell will be open longer than a day
-alias tcntomorrow="date -v+1d +%Y-%m-%d"
-alias tcnyesterday="date -v-1d +%Y-%m-%d"
-
-#----------------------------------------------------
-
-# list block devices in a beautiful format
-# source: https://www.digitalocean.com/community/tutorials/how-to-create-raid-arrays-with-mdadm-on-ubuntu-16-04
-alias tcnlistblockdevices="lsblk -o NAME,SIZE,FSTYPE,TYPE,MOUNTPOINT"
-
-#----------------------------------------------------
-
-# list all file extensions recursively, ordered, starting down from the current directory
-alias tcnfileextensionsrecursive="find . -type f | sed 's/^.*\(\.[a-zA-Z0-9][a-zA-Z0-9][a-zA-Z0-9]\).*$/\1/' | sort | uniq -c | sort -n | tac"
-
-#----------------------------------------------------
-
-# linux command to switch the left/right designations for monitors
-# http://unix.stackexchange.com/questions/10589/how-can-i-swap-my-two-screens-left-to-right
-alias tcnswitchmonitor="xrandr --output HDMI-0 --left-of DVI-I-0"
-
-#----------------------------------------------------
-
-# http://askubuntu.com/questions/370786/how-to-convert-avi-xvid-to-mkv-or-mp4-h264
-# converts AVI video files to MP4
-alias tcnavitomp4="avconv -i test.avi -c:v libx264 -c:a copy outputfile.mp4"
-
-#----------------------------------------------------
-
-# askubuntu.com/questions/39180/pdf-to-mobi-convertor
-# converts PDF to mobi files
-# TODO, create a function here and take in an argument
-alias tcnconverttomobi="ebook-converter document.pdf .mobi"
-
-#----------------------------------------------------
-
-# converts CR2 files to JPGs
-# This will output (not replace) the file with a new extension.
-# foo.CR2 exported to foo.png
-alias tcncr2tojpg="ufraw-batch --out-type jpg *.CR2"
-
-#----------------------------------------------------
-
-# Recursively remove empty directories
-# source: https://unix.stackexchange.com/questions/46322/how-can-i-recursively-delete-empty-directories-in-my-home-directory
-# most likely to work on Linux, not sure about macOS
-alias tcnrprintemptydir="find . -type d -empty -print"
-
-# TODO: DANGER, maybe add some safeguards here?
-#alias tcnrdeleteemptydir="find . -type d -empty -delete"
-
-#----------------------------------------------------
-
-# source: https://stackoverflow.com/questions/1657017/how-to-squash-all-git-commits-into-one
-# squashes the WHOLE current tree into one
-# CAREFUL
-alias tcngitsquashallcommitsintoone='git reset $(git commit-tree HEAD^{tree} -m "A new start")'
-
-#----------------------------------------------------
-
+#~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~
+#                                 __   _   _        
+#                                / _| (_) | |   ___ 
+#                               | |_  | | | |  / _ \
+#                               |  _| | | | | |  __/          File Manipulation
+#                               |_|   |_| |_|  \___|
+#                     
+#~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~
 # USAGE:
 #
 #   tyler$ tcnfilegetbirthday myfile.txt
@@ -209,29 +310,14 @@ function tcnfilegetbirthday() {
 }
 export -f tcnfilegetbirthday
 
-#----------------------------------------------------
-
-# uses `uname` to try to determine the OS
+#~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~
+#                               _       ___        
+#                              | | __  ( _ )   ___ 
+#                              | |/ /  / _ \  / __|
+#                              |   <  | (_) | \__ \          Kubernetes Tools
+#                              |_|\_\  \___/  |___/
 #
-# USAGE:
-#
-#   tyler$ tcngetos
-#   macos
-#
-function tcngetos() {
-	if [ "$(uname)" == "Darwin" ]; then
-		echo "macos"
-	elif [ "$(expr substr $(uname -s) 1 5)" == "Linux" ]; then
-		echo "linux"
-	elif [ "$(expr substr $(uname -s) 1 10)" == "MINGW32_NT" ]; then
-		echo "ming32"
-	elif [ "$(expr substr $(uname -s) 1 10)" == "MINGW64_NT" ]; then
-		echo "ming64"
-	fi
-}
-export -f tcngetos
-
-#----------------------------------------------------
+#~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~
 
 # k8s simple service
 function tcnk8shelloworldservice() {
@@ -240,141 +326,20 @@ function tcnk8shelloworldservice() {
 }
 export -f tcnk8shelloworldservice
 
-#----------------------------------------------------
-
-# tcntask
-# shows the appropriate tasks based on the time
-# source: https://stackoverflow.com/questions/3490032/how-to-check-if-today-is-a-weekend-in-bash
-function tcntask() {
-	# always synchronize
-	task syn
-
-	clear
-
-	# print monthly productivity chart
-	task ghistory.monthly
-
-	# print 3 months of the calendar
-	cal -3
-		
-	# check started tasks
-	task active > /dev/null 2>&1
-	# if there are tasks started, print that
-	if [ $? -eq 0 ]
-	then
-		task active
-  		return 0
-	fi
-
-
-	# check overdue tasks
-	task overdue > /dev/null 2>&1
-	# if there is stuff overdue, print that
-	if [ $? -eq 0 ]
-	then
-		task overdue
-  		return 0
-	fi
-
-	# TODO need to be fixed!
-	# if it's the weekend, don't show work tasks
-	if [[ $(date +%u) -gt 5 ]] ; then
-	echo
-		echo "-=-=-=-=-=-=-=-=-=-=-=-=-=HOME TASKS-=-=-=-=-=-=-=-=-=-=-=-=-=-=-"
-		task next
-	# if its outside of working(ish) hours (8am - 6pm), don't show work tasks
-	# the sed will strip off leading zeroes
-	elif [[ $(date +%H | sed 's/^0*//') -gt 7 && $(date +%H | sed 's/^0*//') -lt 18 ]] ;  then
-		echo
-		echo "-=-=-=-=-=-=-=-=-=-=-=-=-=WORK TASKS-=-=-=-=-=-=-=-=-=-=-=-=-=-=-"
-		task next
-	else
-		echo
-		echo "-=-=-=-=-=-=-=-=-=-=-=-=-=HOME TASKS-=-=-=-=-=-=-=-=-=-=-=-=-=-=-"
-		task next
-	fi
-}
-export -f tcntask
-
-
-#----------------------------------------------------
-
 # k8s debugging pod
 function tcnk8stestpod() {
   kubectl run -i --tty --rm TESTPOD --image=centos --restart=Never -- sh
 }
 export -f tcnk8stestpod
 
-#----------------------------------------------------
-
-# clean up OS things
-function tcncleanup() {
-  # if downloads and desktop directories exist, move everything from downloads to the desktop
-  # downloads folders are dumb and stuffs accumlates too much
-  [ -d ~/Downloads ] && [ -d ~/Desktop ] && mv ~/Downloads/* ~/Desktop/
-
-  # if bash history exists, delete it
-  [ -f ~/.bash_history ] && rm ~/.bash_history
-
-  # possible ideas
-  # if trash (folder) exists, delete everything inside of it
-  # not sure how to do this one yet
-}
-export -f tcncleanup
-
-#----------------------------------------------------
-
-# tests for intermittent HTTP errors or slowness
-# prints curl testing in CSV format for easy parsing
-#
-# USAGE:
-#      user$: tcncurlloop google.com
-#
-# OUTPUT:
-#      301, 0.067804, 2020-04-02T22:10:06Z
-#      301, 0.038223, 2020-04-02T22:10:07Z
-#      301, 0.041026, 2020-04-02T22:10:08Z
-#
-#      (status code), (total time), (iso timestamp)
-#
-function tcncurlloop(){
-	while true
-		do curl -w '%{http_code}, %{time_total}, ' $1 --connect-timeout 3 -o /dev/null --silent; date -u +"%Y-%m-%dT%H:%M:%SZ"
-		sleep 1s;
-	done
-}
-export -f tcncurlloop
-
-#----------------------------------------------------
-
-# curl with as much useful information as possible
-alias tcninfocurl="
-curl -o /dev/null -vs -w \
-'
-time_appconnect:    %{time_appconnect}s (start until the SSL/SSH/etc connect/handshake to the remote host was completed)
-time_connect:       %{time_connect}s (start until the TCP connect to the remote host (or proxy) was completed)
-time_namelookup:    %{time_namelookup}s (start until the name resolving was completed)
-time_pretransfer:   %{time_pretransfer}s (start until the file transfer was just about to begin)
-time_redirect:      %{time_redirect}s (all redirection steps before the final transaction was started)
-time_starttransfer: %{time_starttransfer}s (TTFB)
-time_total:         %{time_total}s
-content_type:       %{content_type}
-http_code:          %{http_code}
-http_version:       %{http_version}
-local_ip:           %{local_ip}
-local_port:         %{local_port}
-remote_ip:          %{remote_ip}
-remote_port:        %{remote_port}
-size_download:      %{size_download} bytes
-size_header:        %{size_header} bytes
-size_request:       %{size_request} bytes
-size_upload:        %{size_upload} bytes
-speed_download:     %{speed_download} bytes per second
-speed_upload:       %{speed_upload} bytes per second
-' \
-"
-
-#----------------------------------------------------
+#~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~
+#                                 __ _    ___   _ __  
+#                                / _` |  / __| | '_ \ 
+#                               | (_| | | (__  | |_) |       GCP Tools
+#                                \__, |  \___| | .__/ 
+#                                |___/         |_|    
+#                                 
+#~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~
 
 # GCP web server
 # Creates a functioning web server in us-central1-a (for now)
@@ -411,9 +376,16 @@ function tcngcpwebserver() {
 }
 export -f tcngcpwebserver
 
-#----------------------------------------------------
+#~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~
+#                                       _             _                  _   _ 
+#               _   _    ___    _   _  | |_   _   _  | |__     ___    __| | | |
+#              | | | |  / _ \  | | | | | __| | | | | | '_ \   / _ \  / _` | | |
+#              | |_| | | (_) | | |_| | | |_  | |_| | | |_) | |  __/ | (_| | | |   youtube-dl
+#               \__, |  \___/   \__,_|  \__|  \__,_| |_.__/   \___|  \__,_| |_|
+#               |___/                                                          
+#~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~
 
-# make an attempt to get the video in an mp4 and in best quality.
+# make an attempt to get the video in an mp4 and in best quality
 # If that fails, fall back to whatever the default is
 function tcnyoutubedl() {
   # attempt to download it in my preferred format
@@ -431,7 +403,104 @@ export -f tcnyoutubedl
 # source: https://askubuntu.com/questions/634584/how-to-download-youtube-videos-as-a-best-quality-audio-mp3-using-youtube-dl
 alias tcnyoutubedlmusic='youtube-dl -f bestaudio --extract-audio --audio-format mp3 --audio-quality 0'
 
-#----------------------------------------------------
+#~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~
+#                                       _   _   
+#                                __ _  (_) | |_ 
+#                               / _` | | | | __|
+#                              | (_| | | | | |_              git Tools
+#                               \__, | |_|  \__|
+#                               |___/           
+#
+#~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~
+
+function tcngitpush() {
+	git add .
+	git commit
+	git push origin master
+}
+export -f tcngitpush
+
+# source: https://stackoverflow.com/questions/1657017/how-to-squash-all-git-commits-into-one
+# squashes the WHOLE current tree into one
+# CAREFUL
+alias tcngitsquashallcommitsintoone='git reset $(git commit-tree HEAD^{tree} -m "A new start")'
+
+#~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~
+#
+#                              _ __     ___  | |_ 
+#                             | '_ \   / _ \ | __|
+#                             | | | | |  __/ | |_            Networking Tools
+#                             |_| |_|  \___|  \__|
+#
+#~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~
+
+# tests for intermittent HTTP errors or slowness
+# prints curl testing in CSV format for easy parsing
+#
+# USAGE:
+#      user$: tcnnetcurlloop google.com
+#
+# OUTPUT:
+#      301, 0.067804, 2020-04-02T22:10:06Z
+#      301, 0.038223, 2020-04-02T22:10:07Z
+#      301, 0.041026, 2020-04-02T22:10:08Z
+#
+#      (status code), (total time), (iso timestamp)
+#
+function tcnnetcurlloop(){
+	while true
+		do curl -w '%{http_code}, %{time_total}, ' $1 --connect-timeout 3 -o /dev/null --silent; date -u +"%Y-%m-%dT%H:%M:%SZ"
+		sleep 1s;
+	done
+}
+export -f tcnnetcurlloop
+
+# curl with as much useful information as possible
+alias tcnnetcurl="
+curl -o /dev/null -vs -w \
+'
+time_appconnect:    %{time_appconnect}s (start until the SSL/SSH/etc connect/handshake to the remote host was completed)
+time_connect:       %{time_connect}s (start until the TCP connect to the remote host (or proxy) was completed)
+time_namelookup:    %{time_namelookup}s (start until the name resolving was completed)
+time_pretransfer:   %{time_pretransfer}s (start until the file transfer was just about to begin)
+time_redirect:      %{time_redirect}s (all redirection steps before the final transaction was started)
+time_starttransfer: %{time_starttransfer}s (TTFB)
+time_total:         %{time_total}s
+content_type:       %{content_type}
+http_code:          %{http_code}
+http_version:       %{http_version}
+local_ip:           %{local_ip}
+local_port:         %{local_port}
+remote_ip:          %{remote_ip}
+remote_port:        %{remote_port}
+size_download:      %{size_download} bytes
+size_header:        %{size_header} bytes
+size_request:       %{size_request} bytes
+size_upload:        %{size_upload} bytes
+speed_download:     %{speed_download} bytes per second
+speed_upload:       %{speed_upload} bytes per second
+' \
+"
+
+#~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~
+#                                  _   _        
+#                               __| | (_)  _ __ 
+#                              / _` | | | | '__|
+#                             | (_| | | | | |                Directory Tools
+#                              \__,_| |_| |_|   
+#
+#~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~
+
+# list all file extensions recursively, ordered, starting down from the current directory
+alias tcndirfileextensionsrecursive="find . -type f | sed 's/^.*\(\.[a-zA-Z0-9][a-zA-Z0-9][a-zA-Z0-9]\).*$/\1/' | sort | uniq -c | sort -n | tac"
+
+# Recursively remove empty directories
+# source: https://unix.stackexchange.com/questions/46322/how-can-i-recursively-delete-empty-directories-in-my-home-directory
+# most likely to work on Linux, not sure about macOS
+alias tcndirprintempty="find . -type d -empty -print"
+
+# TODO: DANGER, maybe add some safeguards here?
+#alias tcnrdeleteemptydir="find . -type d -empty -delete"
 
 # TODO, docs and safeguards needed
 # DANGER, this will actually touch your FS,
@@ -450,10 +519,6 @@ function tcndirprependiso() {
     fi
   done
 }
-export -f tcndirprependiso
-# don't feel comfortable exporting because it cannot handle files with spaces
-
-#----------------------------------------------------
 
 # takes a directory tree and flattens it
 #/dir1
@@ -477,9 +542,6 @@ function tcndirflatten() {
   # remove all empty directories remaining
   find . -type d -empty -delete
 }
-#export -f tcndirflatten
-
-#----------------------------------------------------
 
 # WARNING: spaces with file names will bug this
 function tcndirprependmd5() {
@@ -496,9 +558,6 @@ function tcndirprependmd5() {
   fi
   done
 }
-# don't feel comfortable exporting this because it cannot handle files with spaces in the name
-
-#----------------------------------------------------
 
 # source: https://vitux.com/how-to-replace-spaces-in-filenames-with-underscores-on-the-linux-shell/
 function tcndirspacetodash() {
@@ -520,9 +579,6 @@ function tcndirspacetodash() {
   fi
 done
 }
-#export -f tcndirspacetodash
-
-#----------------------------------------------------
 
 function tcndirmediaprep() {
    tcndirflatten
@@ -531,23 +587,3 @@ function tcndirmediaprep() {
    tcndirprependiso
 }
 export -f tcndirmediaprep
-
-#----------------------------------------------------
-
-function tcnsource() {
-	#TODO, make this an env variable saved at the top
-   source ~/dev/dotfiles/bashrc
-}
-export -f tcnsource
-
-#----------------------------------------------------
-
-function tcngitpush() {
-	git add .
-	git commit
-	git push origin master
-}
-export -f tcngitpush
-
-# TODO - format this better
-# favorite wireshark filters
