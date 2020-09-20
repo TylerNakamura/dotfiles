@@ -36,6 +36,7 @@
 # - image recognition to detect similar photos
 # - tcndirmediaprep having problems with MOV files
 # - tcndirmediaprep to separate photos and videos
+# - tcnk8skillallpods
 # - DSSTORE killer (maybe AAE files too?)
 
 #~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~
