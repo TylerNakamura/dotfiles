@@ -372,6 +372,13 @@ function tcnk8stestpod() {
 }
 export -f tcnk8stestpod
 
+# k8s dns hammer
+# source: https://github.com/TylerNakamura/dns-hammer
+function tcnk8sdeploydnshammer() {
+  kubectl create deployment dns-hammer --image=gcr.io/tyrionlannister-237214/dns-hammer
+}
+export -f tcnk8sdeploydnshammer
+
 #~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~
 #                                 __ _    ___   _ __  
 #                                / _` |  / __| | '_ \ 
