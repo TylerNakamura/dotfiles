@@ -37,6 +37,7 @@
 # - tcndirmediaprep having problems with MOV files
 # - tcndirmediaprep to separate photos and videos
 # - tcnk8skillallpods
+# - tcnman (ie tcnman tcndirmediaprep)
 # - DSSTORE killer (maybe AAE files too?)
 
 #~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~
