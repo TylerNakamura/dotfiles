@@ -36,6 +36,7 @@
 # - image recognition to detect similar photos
 # - tcndirmediaprep having problems with MOV files
 # - tcndirmediaprep to separate photos and videos
+# - tcntask to delete tasks that are >2(x) days old
 # - tcnk8skillallpods
 # - tcnman (ie tcnman tcndirmediaprep)
 # - setup.tylernakamura.com should check for diskspace before installing stuff
@@ -114,7 +115,7 @@ export -f tcnsource
 # clean up OS things
 function tcncleanup() {
   # if downloads and desktop directories exist, move everything from downloads to the desktop
-  # downloads folders are dumb and stuffs accumlates too much
+  # downloads folders are dumb and stuffs accumulates too much
   [ -d ~/Downloads ] && [ -d ~/Desktop ] && mv ~/Downloads/* ~/Desktop/
 
   # if bash history exists, delete it
@@ -132,7 +133,6 @@ export -f tcncleanup
 # shows the appropriate tasks based on the time
 # source: https://stackoverflow.com/questions/3490032/how-to-check-if-today-is-a-weekend-in-bash
 function tcntask() {
-	# always synchronize
 	task syn
 
 	clear
