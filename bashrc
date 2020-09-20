@@ -38,6 +38,7 @@
 # - tcndirmediaprep to separate photos and videos
 # - tcnk8skillallpods
 # - tcnman (ie tcnman tcndirmediaprep)
+# - setup.tylernakamura.com should check for diskspace before installing stuff
 # - DSSTORE killer (maybe AAE files too?)
 
 #~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~
