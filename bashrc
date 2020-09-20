@@ -32,6 +32,7 @@
 # - tcnnetinterpratediagnostics
 # - extract tool (with tooltips to help remember)
 # - bashrc to check itself to see if it is out of date with bashrc.tylernakamura.com
+# - DSSTORE killer
 
 #~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~
 
@@ -194,6 +195,41 @@ function tcngetos() {
 	fi
 }
 export -f tcngetos
+
+# Generate a pseudo UUID in bash
+# source: https://serverfault.com/a/597626
+tcnuuid()
+{
+    local N B T
+
+    for (( N=0; N < 16; ++N ))
+    do
+        B=$(( $RANDOM%255 ))
+
+        if (( N == 6 ))
+        then
+            printf '4%x' $(( B%15 ))
+        elif (( N == 8 ))
+        then
+            local C='89ab'
+            printf '%c%x' ${C:$(( $RANDOM%${#C} )):1} $(( B%15 ))
+        else
+            printf '%02x' $B
+        fi
+
+        for T in 3 5 7 9
+        do
+            if (( T == N ))
+            then
+                printf '-'
+                break
+            fi
+        done
+    done
+
+    echo
+}
+export -f tcnuuid
 
 #~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~
 #        ,--./,-.                                 
@@ -559,6 +595,24 @@ function tcndirprependmd5() {
   done
 }
 
+# WARNING: spaces with file names will bug this
+# depends on tcnuuid
+function tcndirprependuuid() {
+  for f in ./*
+  do
+    if [ -f $f ]; then
+      basefile=$(basename $f)
+      filepath=$(dirname $f)
+	  # don't want the full UUID here, 5 characters is fine
+      uuid=$(tcnuuid | head -c 5)
+
+      echo "mv $filepath/$basefile $filepath/$uuid-$basefile"
+
+      mv "$filepath/$basefile" "$filepath/$uuid-$basefile"
+  fi
+  done
+}
+
 # source: https://vitux.com/how-to-replace-spaces-in-filenames-with-underscores-on-the-linux-shell/
 function tcndirspacetodash() {
   for f in ./*
@@ -583,6 +637,7 @@ done
 function tcndirmediaprep() {
    tcndirflatten
    tcndirspacetodash
+   tcndirprependuuid
    tcndirprependmd5
    tcndirprependiso
 }
