@@ -24,20 +24,43 @@
 
 # TODO
 # - a function that is a "check with user to make sure they really want to proceed"
+# - a "filter for keyword" functionality in the tcndirmediaprep
+# - disallow tcnmediaprep from being run outside of desktop or home directory
+# - tcnnethostdiagnosticsgenerate
+# - tcnnetinterpratediagnostics
+# - extract tool (with tooltips to help remember)
 
-# macOS to stop giving warnings upon using bash
-# source: https://news.ycombinator.com/item?id=21317623&p=2
-# TODO add a macos guard here
-export BASH_SILENCE_DEPRECATION_WARNING=1
+# ensure vim is default editor for programs
+# source: https://unix.stackexchange.com/a/73486
+export VISUAL=vim
+export EDITOR="$VISUAL"
 
-# sometimes mac is dumb and doesnt repeat keys
-# source: https://www.idownloadblog.com/2015/01/14/how-to-enable-key-repeats-on-your-mac/
-# TODO, add guard and mac check
-# defaults write NSGlobalDomain ApplePressAndHoldEnabled -bool false
-# can make an if statement with this: defaults read NSGlobalDomain ApplePressAndHoldEnabled
+# macOS specific settings
+if [ "$(uname)" == "Darwin" ]; then
+    # macOS to stop giving warnings upon using bash (I don't want to use zsh!)
+	# source: https://news.ycombinator.com/item?id=21317623&p=2
+	if [ "$BASH_SILENCE_DEPRECATION_WARNING" != 1 ]; then
+		export BASH_SILENCE_DEPRECATION_WARNING=1
+	fi
+
+	# sometimes macOS is dumb and does not repeat keys
+	# source: https://www.idownloadblog.com/2015/01/14/how-to-enable-key-repeats-on-your-mac/
+	# if the setting is not correct, fix it
+	if [ "$(defaults read NSGlobalDomain ApplePressAndHoldEnabled)" = "1" ]; then
+		echo "Disabling NSGlobalDomain ApplePressAndHoldEnabled."
+		defaults write NSGlobalDomain ApplePressAndHoldEnabled -bool false
+	fi
+
+	# macOS `date` command doesn't have iso output flag
+	# source: https://stackoverflow.com/questions/7216358/date-command-on-os-x-doesnt-have-iso-8601-i-option
+	alias tcnmacisodate="date -u +'%Y-%m-%dT%H:%M:%SZ'"
+
+	alias tcnmacrenamescreenshots='rename "s/Screen\ Shot\ //" *.png'
+
+	echo "macOS settings loaded"
+fi
 
 # vi mode
-# the greatest feature of bash
 set -o vi
 
 # -a - all files, even hidden ones
@@ -51,14 +74,9 @@ alias ls="ls -lhit"
 
 # get dates of yesterday and tomorrow
 # useful for scripting
+# these can't be static env variables because the shell will be open longer than a day
 alias tcntomorrow="date -v+1d +%Y-%m-%d"
 alias tcnyesterday="date -v-1d +%Y-%m-%d"
-
-#----------------------------------------------------
-
-# macOS date command doesn't have iso output flag
-# source: https://stackoverflow.com/questions/7216358/date-command-on-os-x-doesnt-have-iso-8601-i-option
-alias tcnmacisodate="date -u +'%Y-%m-%dT%H:%M:%SZ'"
 
 #----------------------------------------------------
 
@@ -115,8 +133,6 @@ alias tcnrprintemptydir="find . -type d -empty -print"
 alias tcngitsquashallcommitsintoone='git reset $(git commit-tree HEAD^{tree} -m "A new start")'
 
 #----------------------------------------------------
-
-alias tcnmacrenamescreenshots='rename "s/Screen\ Shot\ //" *.png'
 
 # USAGE:
 #
