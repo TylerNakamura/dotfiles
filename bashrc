@@ -42,6 +42,8 @@
 # - setup.tylernakamura.com should check for diskspace before installing stuff
 # - DSSTORE killer (maybe AAE files too?)
 
+TCNBASHRC="/Users/tylernakamura/dev/dotfiles/bashrc"
+
 #~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~
 
 # ensure vim is default editor for programs
@@ -104,14 +106,40 @@ alias tcnconverttomobi="ebook-converter document.pdf .mobi"
 alias tcncr2tojpg="ufraw-batch --out-type jpg *.CR2"
 
 function tcnsource() {
-	#TODO, make this an env variable saved at the top
-   source ~/dev/dotfiles/bashrc
+   source $TCNBASHRC
    echo "bashrc reloaded"
 }
 export -f tcnsource
 
 #~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~
 
+#TODO get rid of leading whitespaces in front of aliases
+#TODO add colors? :) 
+function tcnman() {
+	# ensure 1 argument is supplied
+	if [ $# -eq 0 ]; then
+    	echo "Please specify which function for which you would like to see docs!"
+    	return
+	fi
+
+	# if there are docs
+	if grep "# FUNCTION $1" $TCNBASHRC ; then
+		clear
+		sed -n -e "/function $1() {/,/^}/ p" $TCNBASHRC
+	# if docs haven't been written yet
+	else
+		# if no alias, print out the function
+		if ! grep "alias $1=" $TCNBASHRC ; then
+			clear
+			sed -n -e "/function $1/,/^}/ p" $TCNBASHRC
+		fi
+	fi
+}
+export -f tcnman
+
+#~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~
+
+# FUNCTION tcncleanup
 # clean up OS things
 function tcncleanup() {
   # if downloads and desktop directories exist, move everything from downloads to the desktop
@@ -512,6 +540,102 @@ alias tcngitsquashallcommitsintoone='git reset $(git commit-tree HEAD^{tree} -m 
 #
 #~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~
 
+function tcnnetprofilegenerate(){
+	# possible ideas here
+	#tc -s qdisc show <interface>
+	#netstat -s
+	#ethtool
+	#nicstat 1
+	#sar -n EDEV
+	#perf record -e skb:kfree_skb -g -a -- sleep 10
+	#ss -tiepm
+	#uname
+	#free -h
+
+	if [ "$(uname)" == "Darwin" ] ; then
+		# macOS
+		dest="$(date -u +'%Y-%m-%dT%H:%M:%SZ')-network-profile"
+		networkinterfaces=$(ifconfig -a | sed -E 's/[[:space:]:].*//;/^$/d')
+	else
+		# linux
+		dest="$(date --iso-8601=seconds)-$(hostname)-network-profile"	
+		# NOT TESTTED TODO
+		# https://superuser.com/questions/203272/list-only-the-device-names-of-all-available-network-interfaces
+		# TODO networkinterfaces=$(ls /sys/class/net)
+		networkinterfaces=$(ip link show | grep -Eo "[0-9]*:\s.*:" | cut -f 2 -d ":" | sed -e 's/^[[:space:]]*//' | tr "\n" " ")
+	fi
+
+	mkdir $dest
+	cd $dest
+
+	echo "NICS: $networkinterfaces"
+
+	# netstat
+	if command -v netstat &> /dev/null
+	then
+		netstat -s > netstat_-s.out
+	fi
+
+	# ip
+	if command -v ip &> /dev/null
+	then
+		ip -s link > ip_-s_link.out
+	fi
+
+	# free
+	if command -v free &> /dev/null
+	then
+		free -h > free_-h.out
+	fi
+
+	# uname
+	if command -v uname &> /dev/null
+	then
+		uname -a > uname_-a.out
+	fi
+
+	# uptime
+	if command -v uptime &> /dev/null
+	then
+		uptime > uptime.out
+		if ! [ "$(uname)" == "Darwin" ] ; then
+			uptime -p > uptime_-p.out
+		fi
+	fi
+
+	# iptables
+	if command -v iptables &> /dev/null
+	then
+		iptables -S > iptables_-S.out
+		iptables -L > iptables_-L.out
+	fi
+
+	# TODO this errors if root
+	# dmesg
+	if command -v dmesg &> /dev/null
+	then
+		dmesg > dmesg.out
+	fi
+
+	# journalctl
+	if command -v journalctl &> /dev/null
+	then
+		journalctl -p 3 -x > journalctl_-p_3_-x.out
+	fi
+
+	# tc
+	if command -v tc &> /dev/null
+	then
+		for interface in $networkinterfaces
+		do
+			tc -s qdisc show $interface > tc_-s_qdisc_show_$interface.out
+		done
+	fi
+
+	cd ..
+}
+
+# FUNCTION TCNNETCURLLOOP
 # tests for intermittent HTTP errors or slowness
 # prints curl testing in CSV format for easy parsing
 #
