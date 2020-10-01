@@ -549,6 +549,8 @@ function tcnnetprofilegenerate(){
 	#sar -n EDEV
 	#perf record -e skb:kfree_skb -g -a -- sleep 10
 	#ss -tiepm
+	# ps aux
+	# route -n
 	#uname
 	#free -h
 
