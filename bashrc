@@ -419,17 +419,17 @@ export -f tcnfilegetbirthday
 #~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~
 
 # k8s simple service
-function tcnk8shelloworldservice() {
-  kubectl create deployment hello-world-deployment --image=gcr.io/google-samples/hello-app:1.0
-  kubectl expose deployment hello-world-deployment --type NodePort --port 80 --target-port 8080
+function tcnk8sdeployhelloworldservice() {
+  kubectl create deployment tcnhw --image=gcr.io/google-samples/hello-app:1.0
+  kubectl expose deployment tcnhw --type NodePort --port 80 --target-port 8080
 }
-export -f tcnk8shelloworldservice
+export -f tcnk8sdeployhelloworldservice
 
 # k8s debugging pod
-function tcnk8stestpod() {
+function tcnk8sdeploydebugpod() {
   kubectl run -i --tty --rm TESTPOD --image=centos --restart=Never -- sh
 }
-export -f tcnk8stestpod
+export -f tcnk8sdeploydebugpod
 
 # k8s dns hammer
 # source: https://github.com/TylerNakamura/dns-hammer
