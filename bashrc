@@ -686,6 +686,10 @@ speed_upload:       %{speed_upload} bytes per second
 ' \
 "
 
+# ignore ping probes and scan all the ports
+# super noisy and lengthy
+alias tcnnetnmapfull="nmap -p- -Pn"
+
 #~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~
 #                                  _   _        
 #                               __| | (_)  _ __ 
