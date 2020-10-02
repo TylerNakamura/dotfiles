@@ -43,6 +43,7 @@
 # - DSSTORE killer (maybe AAE files too?)
 
 TCNBASHRC="/Users/tylernakamura/dev/dotfiles/bashrc"
+TCNTMP=/tmp/tcntmp
 
 #~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~
 
@@ -418,12 +419,46 @@ export -f tcnfilegetbirthday
 #
 #~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~
 
-# k8s simple service
+# Deploy Hello World (deploy, svc, ing, )
+function tcnk8sdeployhelloworld() {
+  tcnk8sdeployhelloworlddeployment
+  tcnk8sdeployhelloworldservice
+  tcnk8sdeployhelloworldingress
+}
+export -f tcnk8sdeployhelloworld
+
+# Deploy Hello World Deployment
+function tcnk8sdeployhelloworlddeployment() {
+  kubectl create deployment hello-world --image=gcr.io/google-samples/hello-app:1.0
+}
+export -f tcnk8sdeployhelloworlddeployment
+
+# Deploy Hello World Service
 function tcnk8sdeployhelloworldservice() {
-  kubectl create deployment tcnhw --image=gcr.io/google-samples/hello-app:1.0
-  kubectl expose deployment tcnhw --type NodePort --port 80 --target-port 8080
+  kubectl expose deployment hello-world --type NodePort --port 80 --target-port 8080
 }
 export -f tcnk8sdeployhelloworldservice
+
+# Deploy Hello World Ingress
+function tcnk8sdeployhelloworldingress() {
+  echo "
+    apiVersion: networking.k8s.io/v1beta1
+    kind: Ingress
+    metadata:
+      name: hello-world
+    spec:
+      rules:
+      - http:
+          paths:
+          - path: /*
+            backend:
+              serviceName: hello-world
+              servicePort: 80
+  EOF" > $TCNTMP
+  kubectl apply -f $TCNTMP
+  rm $TCNTMP
+}
+export -f tcnk8sdeployhelloworldingress
 
 # k8s debugging pod
 function tcnk8sdeploydebugpod() {
@@ -437,6 +472,14 @@ function tcnk8sdeploydnshammer() {
   kubectl create deployment dns-hammer --image=gcr.io/tyrionlannister-237214/dns-hammer
 }
 export -f tcnk8sdeploydnshammer
+
+#TODO add a prompt check here
+#TODO add an optional paramater that isn't default
+#TODO check for CRDs like ing and managedcertificate
+function tcnk8sdeletenamespace(){
+	kubectl delete all --all -n default
+}
+export -f tcnk8sdeletenamespace
 
 #~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~
 #                                 __ _    ___   _ __  
