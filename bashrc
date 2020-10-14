@@ -101,6 +101,14 @@ alias tcnconverttomobi="ebook-converter document.pdf .mobi"
 
 #~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~
 
+function tcnbrewallow(){
+  sudo chown -R $(whoami) /usr/local/bin /usr/local/etc /usr/local/sbin /usr/local/share /usr/local/share/doc
+  chmod u+w /usr/local/bin /usr/local/etc /usr/local/sbin /usr/local/share /usr/local/share/doc
+}
+export -f tcnbrewallow
+
+#~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~
+
 # converts CR2 files to JPGs
 # This will output (not replace) the file with a new extension.
 # foo.CR2 exported to foo.png
@@ -323,6 +331,10 @@ if [ "$(uname)" == "Darwin" ]; then
 	alias tcnmacisodate="date -u +'%Y-%m-%dT%H:%M:%SZ'"
 
 	alias tcnmacrenamescreenshots='rename "s/Screen\ Shot\ //" *.png'
+
+	# work machines may attempt to rewrite screensaver timeout value, if so can use:
+	# defaults -currentHost write com.apple.screensaver idleTime 3600
+	# source: https://discussions.apple.com/thread/7610386
 
 	echo "macOS settings loaded"
 fi
