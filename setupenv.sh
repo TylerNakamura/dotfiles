@@ -27,6 +27,7 @@ favetools=(
   dig,dnsutils
   gpg,gnupg
   ping,ping
+  nmap,nmap
 )
 
 # for every tool and package

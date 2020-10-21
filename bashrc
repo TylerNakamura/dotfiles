@@ -44,6 +44,7 @@
 
 TCNBASHRC="/Users/tylernakamura/dev/dotfiles/bashrc"
 TCNTMP=/tmp/tcntmp
+TCNLOGFILE=/var/log/tcnlog.log
 
 #~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~
 
