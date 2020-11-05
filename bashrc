@@ -541,6 +541,22 @@ function tcngcpwebserver() {
 }
 export -f tcngcpwebserver
 
+function tcngcpfirewallalloweverything() {
+	local vpc="${1:-default}"
+	gcloud compute --project=tyrionlannister-237214 firewall-rules create allow-everything-ingress-delete-me --direction=INGRESS --priority=0 --network="$vpc" --action=ALLOW --rules=all --source-ranges=0.0.0.0/0
+}
+export -f tcngcpfirewallalloweverything
+
+function tcngcpfirewallalloweverythingloop() {	
+	local vpc="${1:-default}"
+	while true; do 
+		tcngcpfirewallalloweverything "$vpc"
+		date
+		sleep 60s
+	done
+}
+export -f tcngcpfirewallalloweverythingloop
+
 #~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~
 #                                       _             _                 _   _ 
 #               _   _    ___    _   _  | |_   _   _  | |__    ___    __| | | |
