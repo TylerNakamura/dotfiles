@@ -42,7 +42,7 @@
 # - setup.tylernakamura.com should check for diskspace before installing stuff
 # - DSSTORE killer (maybe AAE files too?)
 
-TCNBASHRC="/Users/$(whoami)/dotfiles/bashrc"
+TCNBASHRC="~/dotfiles/bashrc"
 TCNTMP=/tmp/tcntmp
 TCNLOGFILE=/var/log/tcnlog.log
 
