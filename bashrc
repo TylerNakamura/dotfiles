@@ -175,6 +175,9 @@ function tcntask() {
 
 	clear
 
+	echo "task examples"
+	echo "task add +work wait:2020-08-01 due:2020-09-01 depends:40 recur:1wk mow lawn"
+
 	# print monthly productivity chart
 	task ghistory.monthly
 
