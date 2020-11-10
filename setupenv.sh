@@ -15,7 +15,12 @@
 
 ##$$$$$$################# UPDATES ####################################
 
-sudo apt update -y
+if [ $(whoami) = "root" ]
+then
+  apt update -y
+else
+  sudo apt update -y
+fi
 
 ################### INSTALLING FAVORITE TOOLS #########################
 
