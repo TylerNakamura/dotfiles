@@ -33,6 +33,7 @@ favetools=(
   gpg,gnupg
   ping,ping
   nmap,nmap
+  netstat,net-tools
 )
 
 # for every tool and package
