@@ -488,6 +488,27 @@ function tcnk8sdeploydnshammer() {
 }
 export -f tcnk8sdeploydnshammer
 
+# shows all the CRD objects, can optionally pass in a namespace into $1, defaults to all namespaces
+function tcnk8scrdshow() {
+	tmp=$(mktemp /tmp/tcnk8scrdshow.XXXXXX)
+
+	kubectl get customresourcedefinitions 2>&1 | tail -n +2 | cut -f 1 -d "." > $tmp
+
+	while read crd; do
+		tmp2=$(mktemp /tmp/tcnk8scrdshow.XXXXXX)
+		kubectl get $crd "${1:---all-namespaces}" 2>/dev/null | tr "\n" "," > $tmp2
+
+		echo "-------------$crd--------------"
+		if [ $(wc -c $tmp2 | tr -s " " | xargs | cut -f 1 -d " ") -gt 0 ];
+		then
+			cat $tmp2 | tr "," "\n"
+		fi
+		echo
+
+	done <$tmp
+}
+export -f tcnk8scrdshow
+
 # https://istio.io/latest/docs/examples/bookinfo/ in a script
 function tcnk8sdeploybookinfo() {
 	kubectl label namespace "${1:-default}" istio-injection=enabled
