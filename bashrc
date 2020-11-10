@@ -42,8 +42,7 @@
 # - setup.tylernakamura.com should check for diskspace before installing stuff
 # - DSSTORE killer (maybe AAE files too?)
 
-TCNBASHRC="~/dotfiles/bashrc"
-TCNTMP=/tmp/tcntmp
+TCNBASHRC="$HOME/dotfiles/bashrc"
 TCNLOGFILE=/var/log/tcnlog.log
 
 #~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~
@@ -489,11 +488,29 @@ function tcnk8sdeploydnshammer() {
 }
 export -f tcnk8sdeploydnshammer
 
+# https://istio.io/latest/docs/examples/bookinfo/ in a script
+function tcnk8sdeploybookinfo() {
+	kubectl label namespace "${1:-default}" istio-injection=enabled
+
+	tmp=$(mktemp /tmp/tcnk8sdeploybookinfo.XXXXXX)
+
+	curl https://raw.githubusercontent.com/istio/istio/release-1.7/samples/bookinfo/platform/kube/bookinfo.yaml > $tmp
+	kubectl apply -f $tmp -n "${1:-default}"
+
+	curl https://raw.githubusercontent.com/istio/istio/release-1.7/samples/bookinfo/networking/bookinfo-gateway.yaml > $tmp
+	kubectl apply -f $tmp -n "${1:-default}"
+
+	curl https://raw.githubusercontent.com/istio/istio/release-1.7/samples/bookinfo/networking/destination-rule-all.yaml > $tmp
+	kubectl apply -f $tmp -n "${1:-default}"
+
+	rm $tmp
+}
+export -f tcnk8sdeploybookinfo
+
 #TODO add a prompt check here
-#TODO add an optional paramater that isn't default
 #TODO check for CRDs like ing and managedcertificate
 function tcnk8sdeletenamespace(){
-	kubectl delete all --all -n default
+	kubectl delete all --all -n "${1:-default}"
 }
 export -f tcnk8sdeletenamespace
 
