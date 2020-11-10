@@ -928,5 +928,9 @@ function tcndirmediaprep() {
    tcndirprependuuid
    tcndirprependmd5
    tcndirprependiso
+   mkdir photos
+   mkdir videos
+   mv *.png *.PNG *.jpg *.JPG *.jpeg *.JPEG photos/
+   mv *.mov *.MOV *.mp4 *.MP4 videos/
 }
 export -f tcndirmediaprep
