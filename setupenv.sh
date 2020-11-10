@@ -41,7 +41,12 @@ for i in "${favetools[@]}"; do
     echo "${tool} is already installed"
   else
     echo "${tool} is not already installed, attempting installation..."
-    sudo apt install ${package} -y
+    if [ $(whoami) = "root" ]
+    then
+      apt install ${package} -y
+    else
+      sudo apt install ${package} -y
+    fi
   fi
 done
 
