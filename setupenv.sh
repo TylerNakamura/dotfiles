@@ -34,6 +34,7 @@ favetools=(
   ping,ping
   nmap,nmap
   netstat,net-tools
+  ethtool, ethtool
 )
 
 # for every tool and package

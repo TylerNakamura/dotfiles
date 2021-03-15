@@ -166,6 +166,16 @@ export -f tcncleanup
 
 #~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~
 
+# tcntfreset
+# resets the terraform environemtn
+function tcntfreset() {
+    terraform destroy -auto-approve && terraform apply -auto-approve
+}
+export -f tcntfreset
+
+
+#~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~
+
 # tcntask
 # shows the appropriate tasks based on the time
 # source: https://stackoverflow.com/questions/3490032/how-to-check-if-today-is-a-weekend-in-bash
@@ -449,10 +459,16 @@ function tcnk8sdeployhelloworlddeployment() {
 export -f tcnk8sdeployhelloworlddeployment
 
 # Deploy Hello World Service
-function tcnk8sdeployhelloworldservice() {
+function tcnk8sdeployhelloworldservicenodeport() {
   kubectl expose deployment hello-world --type NodePort --port 80 --target-port 8080
 }
-export -f tcnk8sdeployhelloworldservice
+export -f tcnk8sdeployhelloworldservicenodeport
+
+# Deploy Hello World Service
+function tcnk8sdeployhelloworldserviceloadbalancer() {
+  kubectl expose deployment hello-world --type LoadBalancer --port 80 --target-port 8080
+}
+export -f tcnk8sdeployhelloworldserviceloadbalancer
 
 # Deploy Hello World Ingress
 function tcnk8sdeployhelloworldingress() {
@@ -843,7 +859,6 @@ function tcndirprependiso() {
     fi
   done
 }
-
 # takes a directory tree and flattens it
 #/dir1
 #   /dir2
