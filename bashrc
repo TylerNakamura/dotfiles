@@ -114,6 +114,8 @@ export -f tcnbrewallow
 # foo.CR2 exported to foo.png
 alias tcncr2tojpg="ufraw-batch --out-type jpg *.CR2"
 
+#~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~
+
 function tcnsource() {
    source $TCNBASHRC
    echo "bashrc reloaded"
