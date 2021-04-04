@@ -175,6 +175,13 @@ function tcntfreset() {
 }
 export -f tcntfreset
 
+# tcntfdestroy
+# destroy the terraform environemtn
+function tcntfdestroy() {
+    terraform destroy -auto-approve
+}
+export -f tcntfdestroy
+
 
 #~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~
 
