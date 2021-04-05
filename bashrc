@@ -117,8 +117,19 @@ alias tcncr2tojpg="ufraw-batch --out-type jpg *.CR2"
 #~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~
 
 function tcnsource() {
-   source $TCNBASHRC
-   echo "bashrc reloaded"
+   if [ -f "$HOME/.bashrc" ]; then
+       source $HOME/.bashrc
+       echo "$HOME/.bashrc reloaded"
+   else
+       echo "WARNING: ~/.bashrc does not exist"
+   fi
+
+   if [ -f "$TCNBASHRC" ]; then
+       source $TCNBASHRC
+       echo "$TCNBASHRC reloaded"
+   else
+       echo "WARNING: $TCNBASHRC does not exist"
+   fi
 }
 export -f tcnsource
 
