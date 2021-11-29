@@ -354,10 +354,11 @@ if [ "$(uname)" == "Darwin" ]; then
 	# sometimes macOS is dumb and does not repeat keys
 	# source: https://www.idownloadblog.com/2015/01/14/how-to-enable-key-repeats-on-your-mac/
 	# if the setting is not correct, fix it
-	if [ "$(defaults read NSGlobalDomain ApplePressAndHoldEnabled)" = "1" ]; then
-		echo "Disabling NSGlobalDomain ApplePressAndHoldEnabled."
-		defaults write NSGlobalDomain ApplePressAndHoldEnabled -bool false
-	fi
+	#if [ "$(defaults read NSGlobalDomain ApplePressAndHoldEnabled)" = "1" ]; then
+		#echo "Disabling NSGlobalDomain ApplePressAndHoldEnabled."
+                # TODO, probably need to delete this line, I want to make sure my corp macbook doesnt need it first
+		#defaults write NSGlobalDomain ApplePressAndHoldEnabled -bool false || true
+	#fi
 
 	# macOS `date` command doesn't have iso output flag
 	# source: https://stackoverflow.com/questions/7216358/date-command-on-os-x-doesnt-have-iso-8601-i-option
