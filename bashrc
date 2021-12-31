@@ -28,8 +28,6 @@
 # - a function that is a "check with user to make sure they really want to proceed"
 # - a "filter for keyword" functionality in the tcndirmediaprep
 # - disallow tcnmediaprep from being run outside of desktop or home directory (function tcnsafedirectory)
-# - tcnnethostdiagnosticsgenerate
-# - tcnnetinterpratediagnostics
 # - extract tool (with tooltips to help remember)
 # - bashrc to check itself to see if it is out of date with bashrc.tylernakamura.com
 # - function to lowercase extensions (ie JPG to jpg)
@@ -42,15 +40,17 @@
 # - setup.tylernakamura.com should check for diskspace before installing stuff
 # - DSSTORE killer (maybe AAE files too?)
 
-TCNBASHRC="$HOME/dotfiles/bashrc"
-TCNLOGFILE=/var/log/tcnlog.log
-
 #~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~
+# INIT
+# I don't want to store custom env vars in this repo because it's public
+# it's not the end of the world if I don't have them
 
-# ensure vim is default editor for programs
-# source: https://unix.stackexchange.com/a/73486
-export VISUAL=vim
-export EDITOR="$VISUAL"
+if [ -f "$HOME/tcn-environment-variables/var" ]; then
+  source "$HOME/tcn-environment-variables/var"
+  echo "Custom tcn variables loaded"
+else
+  echo "WARNING - $HOME/tcn-environment-variables/var DOES NOT EXIST"
+ fi
 
 #~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~
 
@@ -117,18 +117,11 @@ alias tcncr2tojpg="ufraw-batch --out-type jpg *.CR2"
 #~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~
 
 function tcnsource() {
-   if [ -f "$HOME/.bashrc" ]; then
-       source $HOME/.bashrc
-       echo "$HOME/.bashrc reloaded"
+   if [ -f "$TCN_BASHRC" ]; then
+       source $TCN_BASHRC
+       echo "$TCN_BASHRC reloaded"
    else
-       echo "WARNING: ~/.bashrc does not exist"
-   fi
-
-   if [ -f "$TCNBASHRC" ]; then
-       source $TCNBASHRC
-       echo "$TCNBASHRC reloaded"
-   else
-       echo "WARNING: $TCNBASHRC does not exist"
+       echo "WARNING: $TCN_BASHRC does not exist"
    fi
 }
 export -f tcnsource
@@ -145,15 +138,15 @@ function tcnman() {
 	fi
 
 	# if there are docs
-	if grep "# FUNCTION $1" $TCNBASHRC ; then
+	if grep "# FUNCTION $1" $TCN_BASHRC ; then
 		clear
-		sed -n -e "/function $1() {/,/^}/ p" $TCNBASHRC
+		sed -n -e "/function $1() {/,/^}/ p" $TCN_BASHRC
 	# if docs haven't been written yet
 	else
 		# if no alias, print out the function
-		if ! grep "alias $1=" $TCNBASHRC ; then
+		if ! grep "alias $1=" $TCN_BASHRC ; then
 			clear
-			sed -n -e "/function $1/,/^}/ p" $TCNBASHRC
+			sed -n -e "/function $1/,/^}/ p" $TCN_BASHRC
 		fi
 	fi
 }
@@ -345,7 +338,7 @@ export -f tcnuuid
 #
 #~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~
 if [ "$(uname)" == "Darwin" ]; then
-    # macOS to stop giving warnings upon using bash (I don't want to use zsh!)
+        # macOS to stop giving warnings upon using bash (I don't want to use zsh!)
 	# source: https://news.ycombinator.com/item?id=21317623&p=2
 	if [ "$BASH_SILENCE_DEPRECATION_WARNING" != 1 ]; then
 		export BASH_SILENCE_DEPRECATION_WARNING=1
