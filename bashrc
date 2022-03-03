@@ -123,6 +123,13 @@ function tcnsource() {
    else
        echo "WARNING: $TCN_BASHRC does not exist"
    fi
+
+  if [ -f "$HOME/tcn-environment-variables/var" ]; then
+    source "$HOME/tcn-environment-variables/var"
+    echo "Custom tcn variables loaded"
+  else
+    echo "WARNING - $HOME/tcn-environment-variables/var DOES NOT EXIST"
+   fi
 }
 export -f tcnsource
 
@@ -190,22 +197,33 @@ export -f tcntfdestroy
 #~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~
 
 # tcntask
-# shows the appropriate tasks based on the time
-# source: https://stackoverflow.com/questions/3490032/how-to-check-if-today-is-a-weekend-in-bash
 function tcntask() {
-	task syn
-
 	clear
 
-	echo "task examples"
-	echo "task add +work wait:2020-08-01 due:2020-09-01 depends:40 recur:1wk mow lawn"
+	#############################################################################################
+
+	echo "==Example fields=="
+	echo "task add +work priority:H wait:2020-08-01 due:2020-09-01 depends:40 recur:1wk mow lawn"
+	echo "AVAILABLE TAGS: +work +tech +home"
+	echo "AVAILABLE RECUR: 1wk weekdays biweekly mo quarterly annual"
+	echo "  for more durations see https://taskwarrior.org/docs/durations.html"
+	echo "=================="
+
+	#############################################################################################
+
+	task sync
+
+	#############################################################################################
 
 	# print monthly productivity chart
 	task ghistory.monthly
 
+	#############################################################################################
+
 	# print 3 months of the calendar
 	cal -3
 		
+	#############################################################################################
 	# check started tasks
 	task active > /dev/null 2>&1
 	# if there are tasks started, print that
@@ -215,6 +233,9 @@ function tcntask() {
   		return 0
 	fi
 
+	#############################################################################################
+
+	# TODO change this to delete overdue tasks (maybe anything over a few days for weekends?)
 	# check overdue tasks
 	task overdue > /dev/null 2>&1
 	# if there is stuff overdue, print that
@@ -224,23 +245,19 @@ function tcntask() {
   		return 0
 	fi
 
-	# TODO need to be fixed!
-	# if it's the weekend, don't show work tasks
-	if [[ $(date +%u) -gt 5 ]] ; then
-	echo
-		echo "-=-=-=-=-=-=-=-=-=-=-=-=-=HOME TASKS-=-=-=-=-=-=-=-=-=-=-=-=-=-=-"
-		task next
-	# if its outside of working(ish) hours (8am - 6pm), don't show work tasks
-	# the sed will strip off leading zeroes
-	elif [[ $(date +%H | sed 's/^0*//') -gt 7 && $(date +%H | sed 's/^0*//') -lt 18 ]] ;  then
-		echo
+	#############################################################################################
+
+	# check if we are on work laptop or personal laptop
+    # work laptop will have "google" in hostname somewhere
+    UNAME=$(uname -a)
+    GOOG_SUB='google'
+    if [[ "$UNAME" =~ .*"$GOOG_SUB".* ]]; then
 		echo "-=-=-=-=-=-=-=-=-=-=-=-=-=WORK TASKS-=-=-=-=-=-=-=-=-=-=-=-=-=-=-"
-		task next
-	else
-		echo
-		echo "-=-=-=-=-=-=-=-=-=-=-=-=-=HOME TASKS-=-=-=-=-=-=-=-=-=-=-=-=-=-=-"
-		task next
-	fi
+        task +work
+    else
+	    echo "-=-=-=-=-=-=-=-=-=-=-=-=-=HOME TASKS-=-=-=-=-=-=-=-=-=-=-=-=-=-=-"
+        task +home
+    fi
 }
 export -f tcntask
 
@@ -346,12 +363,11 @@ if [ "$(uname)" == "Darwin" ]; then
 
 	# sometimes macOS is dumb and does not repeat keys
 	# source: https://www.idownloadblog.com/2015/01/14/how-to-enable-key-repeats-on-your-mac/
-	# if the setting is not correct, fix it
-	#if [ "$(defaults read NSGlobalDomain ApplePressAndHoldEnabled)" = "1" ]; then
-		#echo "Disabling NSGlobalDomain ApplePressAndHoldEnabled."
-                # TODO, probably need to delete this line, I want to make sure my corp macbook doesnt need it first
-		#defaults write NSGlobalDomain ApplePressAndHoldEnabled -bool false || true
-	#fi
+	# source: still need 2022-01-02 https://stackoverflow.com/a/44010683
+	# if [ "$(defaults read NSGlobalDomain ApplePressAndHoldEnabled)" = "1" ]; then
+	# 	echo "Disabling NSGlobalDomain ApplePressAndHoldEnabled."
+	# 	defaults write NSGlobalDomain ApplePressAndHoldEnabled -bool false || true
+	# fi
 
 	# macOS `date` command doesn't have iso output flag
 	# source: https://stackoverflow.com/questions/7216358/date-command-on-os-x-doesnt-have-iso-8601-i-option
