@@ -245,11 +245,11 @@ function tcntask() {
     UNAME=$(uname -a)
     GOOG_SUB='google'
     if [[ "$UNAME" =~ .*"$GOOG_SUB".* ]]; then
-            echo "-=-=-=-=-=-=-=-=-=-=-=-=-=WORK TASKS-=-=-=-=-=-=-=-=-=-=-=-=-=-=-"
-        task +work
+        echo "-=-=-=-=-=-=-=-=-=-=-=-=-=WORK TASKS-=-=-=-=-=-=-=-=-=-=-=-=-=-=-"
+        task -home
     else
-	    echo "-=-=-=-=-=-=-=-=-=-=-=-=-=HOME TASKS-=-=-=-=-=-=-=-=-=-=-=-=-=-=-"
-        task +home
+	echo "-=-=-=-=-=-=-=-=-=-=-=-=-=HOME TASKS-=-=-=-=-=-=-=-=-=-=-=-=-=-=-"
+        task -work
     fi
 }
 export -f tcntask
