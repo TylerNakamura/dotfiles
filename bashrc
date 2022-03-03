@@ -253,10 +253,10 @@ function tcntask() {
     GOOG_SUB='google'
     if [[ "$UNAME" =~ .*"$GOOG_SUB".* ]]; then
 		echo "-=-=-=-=-=-=-=-=-=-=-=-=-=WORK TASKS-=-=-=-=-=-=-=-=-=-=-=-=-=-=-"
-        task +work
+        task -home
     else
 	    echo "-=-=-=-=-=-=-=-=-=-=-=-=-=HOME TASKS-=-=-=-=-=-=-=-=-=-=-=-=-=-=-"
-        task +home
+        task -work
     fi
 }
 export -f tcntask
