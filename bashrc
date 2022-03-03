@@ -200,40 +200,34 @@ export -f tcntfdestroy
 function tcntask() {
 	clear
 
-	#############################################################################################
-
-	echo "==Example fields=="
+        echo "-=-=-=-=-=-=-=-=-=-=-=-=-=EXAMPLE FIELDS-=-=-=-=-=-=-=-=-=-=-=-=-"
 	echo "task add +work priority:H wait:2020-08-01 due:2020-09-01 depends:40 recur:1wk mow lawn"
 	echo "AVAILABLE TAGS: +work +tech +home"
 	echo "AVAILABLE RECUR: 1wk weekdays biweekly mo quarterly annual"
 	echo "  for more durations see https://taskwarrior.org/docs/durations.html"
-	echo "=================="
 
-	#############################################################################################
-
+        echo "-=-=-=-=-=-=-=-=-=-=-=-=-=SYNC-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-"
 	task sync
 
-	#############################################################################################
 
+        echo "-=-=-=-=-=-=-=-=-=-=-=-=-=PRODUCTIVITY-=-=-=-=-=-=-=-=-=-=-=-=-=-"
 	# print monthly productivity chart
 	task ghistory.monthly
 
-	#############################################################################################
 
+        echo "-=-=-=-=-=-=-=-=-=-=-=-=-=CALENDAR-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-"
 	# print 3 months of the calendar
 	cal -3
 		
-	#############################################################################################
 	# check started tasks
 	task active > /dev/null 2>&1
 	# if there are tasks started, print that
 	if [ $? -eq 0 ]
 	then
+                echo "-=-=-=-=-=-=-=-=-=-=-=-=-=ACTIVE TASKS-=-=-=-=-=-=-=-=-=-=-=-=-=-"
 		task active
   		return 0
 	fi
-
-	#############################################################################################
 
 	# TODO change this to delete overdue tasks (maybe anything over a few days for weekends?)
 	# check overdue tasks
@@ -241,18 +235,17 @@ function tcntask() {
 	# if there is stuff overdue, print that
 	if [ $? -eq 0 ]
 	then
+                echo "-=-=-=-=-=-=-=-=-=-=-=-=-=OVERDUE TASKS-=-=-=-=-=-=-=-=-=-=-=-=-="
 		task overdue
   		return 0
 	fi
-
-	#############################################################################################
 
 	# check if we are on work laptop or personal laptop
     # work laptop will have "google" in hostname somewhere
     UNAME=$(uname -a)
     GOOG_SUB='google'
     if [[ "$UNAME" =~ .*"$GOOG_SUB".* ]]; then
-		echo "-=-=-=-=-=-=-=-=-=-=-=-=-=WORK TASKS-=-=-=-=-=-=-=-=-=-=-=-=-=-=-"
+            echo "-=-=-=-=-=-=-=-=-=-=-=-=-=WORK TASKS-=-=-=-=-=-=-=-=-=-=-=-=-=-=-"
         task +work
     else
 	    echo "-=-=-=-=-=-=-=-=-=-=-=-=-=HOME TASKS-=-=-=-=-=-=-=-=-=-=-=-=-=-=-"
