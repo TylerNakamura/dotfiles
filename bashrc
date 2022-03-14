@@ -201,21 +201,25 @@ function tcntask() {
 	clear
 
         echo "-=-=-=-=-=-=-=-=-=-=-=-=-=EXAMPLE FIELDS-=-=-=-=-=-=-=-=-=-=-=-=-"
+	echo
 	echo "task add +work priority:H wait:2020-08-01 due:2020-09-01 depends:40 recur:1wk mow lawn"
 	echo "AVAILABLE TAGS: +work +tech +home"
 	echo "AVAILABLE RECUR: 1wk weekdays biweekly mo quarterly annual"
 	echo "  for more durations see https://taskwarrior.org/docs/durations.html"
+	echo
 
         echo "-=-=-=-=-=-=-=-=-=-=-=-=-=SYNC-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-"
+	echo
 	task sync
-
+	echo
 
         echo "-=-=-=-=-=-=-=-=-=-=-=-=-=PRODUCTIVITY-=-=-=-=-=-=-=-=-=-=-=-=-=-"
 	# print monthly productivity chart
-	task ghistory.monthly
+	task ghistory.weekly
 
 
         echo "-=-=-=-=-=-=-=-=-=-=-=-=-=CALENDAR-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-"
+	echo
 	# print 3 months of the calendar
 	cal -3
 		
