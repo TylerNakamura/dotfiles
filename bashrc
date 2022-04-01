@@ -202,7 +202,7 @@ function tcntask() {
 
         echo "-=-=-=-=-=-=-=-=-=-=-=-=-=EXAMPLE FIELDS-=-=-=-=-=-=-=-=-=-=-=-=-"
 	echo
-	echo "task add +work priority:H wait:2020-08-01 due:2020-09-01 depends:40 recur:1wk mow lawn"
+	echo "task add +work priority:H wait:2020-08-01 due:2020-09-01 depends:40 recur:1wk \"Mow Lawn\""
 	echo "AVAILABLE TAGS: +work +tech +home"
 	echo "AVAILABLE RECUR: 1wk weekdays biweekly mo quarterly annual"
 	echo "  for more durations see https://taskwarrior.org/docs/durations.html"
