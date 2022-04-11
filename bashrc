@@ -200,7 +200,7 @@ export -f tcntfdestroy
 function tcntask() {
 	clear
 
-        echo "-=-=-=-=-=-=-=-=-=-=-=-=-=EXAMPLE FIELDS-=-=-=-=-=-=-=-=-=-=-=-=-"
+    echo "-=-=-=-=-=-=-=-=-=-=-=-=-=EXAMPLE FIELDS-=-=-=-=-=-=-=-=-=-=-=-=-"
 	echo
 	echo "task add +work priority:H wait:2020-08-01 due:2020-09-01 depends:40 recur:1wk \"Mow Lawn\""
 	echo "AVAILABLE TAGS: +work +tech +home"
@@ -208,52 +208,63 @@ function tcntask() {
 	echo "  for more durations see https://taskwarrior.org/docs/durations.html"
 	echo
 
-        echo "-=-=-=-=-=-=-=-=-=-=-=-=-=SYNC-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-"
+    echo "-=-=-=-=-=-=-=-=-=-=-=-=-=SYNC-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-"
 	echo
 	task sync
 	echo
 
-        echo "-=-=-=-=-=-=-=-=-=-=-=-=-=PRODUCTIVITY-=-=-=-=-=-=-=-=-=-=-=-=-=-"
+    echo "-=-=-=-=-=-=-=-=-=-=-=-=-=PRODUCTIVITY-=-=-=-=-=-=-=-=-=-=-=-=-=-"
 	# print monthly productivity chart
 	task ghistory.weekly
 
 
-        echo "-=-=-=-=-=-=-=-=-=-=-=-=-=CALENDAR-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-"
+    echo "-=-=-=-=-=-=-=-=-=-=-=-=-=CALENDAR-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-"
 	echo
 	# print 3 months of the calendar
 	cal -3
 		
-	# check started tasks
-	task active > /dev/null 2>&1
-	# if there are tasks started, print that
-	if [ $? -eq 0 ]
-	then
-                echo "-=-=-=-=-=-=-=-=-=-=-=-=-=ACTIVE TASKS-=-=-=-=-=-=-=-=-=-=-=-=-=-"
-		task active
-  		return 0
-	fi
-
-	# TODO change this to delete overdue tasks (maybe anything over a few days for weekends?)
-	# check overdue tasks
+	# check overdue tasks first
 	task overdue > /dev/null 2>&1
 	# if there is stuff overdue, print that
 	if [ $? -eq 0 ]
 	then
-                echo "-=-=-=-=-=-=-=-=-=-=-=-=-=OVERDUE TASKS-=-=-=-=-=-=-=-=-=-=-=-=-="
+        echo "-=-=-=-=-=-=-=-=-=-=-=-=-=OVERDUE TASKS-=-=-=-=-=-=-=-=-=-=-=-=-="
 		task overdue
   		return 0
 	fi
 
-	# check if we are on work laptop or personal laptop
-    # work laptop will have "google" in hostname somewhere
+	# check if we are on work machine or personal machine 
+    # work machine will have "google" in hostname somewhere
     UNAME=$(uname -a)
     GOOG_SUB='google'
+	# if using work machine...
     if [[ "$UNAME" =~ .*"$GOOG_SUB".* ]]; then
-        echo "-=-=-=-=-=-=-=-=-=-=-=-=-=WORK TASKS-=-=-=-=-=-=-=-=-=-=-=-=-=-=-"
-        task -home
+		# check started tasks
+	    task active -home > /dev/null 2>&1
+		# if there are tasks started, print that
+		if [ $? -eq 0 ]
+		then
+	        echo "-=-=-=-=-=-=-=-=-=-=-=-=-=ACTIVE WORK TASKS-=-=-=-=-=-=-=-=-=-=-="
+			task active -home
+			return 0
+		else
+			echo "-=-=-=-=-=-=-=-=-=-=-=-=-=ALL WORK TASKS-=-=-=-=-=-=-=-=-=-=-=-=-"
+            task -home
+		fi
+	# if _not_ using work computer...
     else
-	echo "-=-=-=-=-=-=-=-=-=-=-=-=-=HOME TASKS-=-=-=-=-=-=-=-=-=-=-=-=-=-=-"
-        task -work
+		# check started tasks
+	    task active -work > /dev/null 2>&1
+		# if there are tasks started, print that
+		if [ $? -eq 0 ]
+		then
+			echo "-=-=-=-=-=-=-=-=-=-=-=-=-=ACTIVE HOME TASKS-=-=-=-=-=-=-=-=-=-=-="
+			task active -work
+			return 0
+		else
+			echo "-=-=-=-=-=-=-=-=-=-=-=-=-=ALL HOME TASKS-=-=-=-=-=-=-=-=-=-=-=-=-"
+            task -work
+		fi
     fi
 }
 export -f tcntask
