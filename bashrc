@@ -45,12 +45,12 @@
 # I don't want to store custom env vars in this repo because it's public
 # it's not the end of the world if I don't have them
 
-if [ -f "$HOME/tcn-environment-variables/var" ]; then
-  source "$HOME/tcn-environment-variables/var"
-  echo "Custom tcn variables loaded"
-else
-  echo "WARNING - $HOME/tcn-environment-variables/var DOES NOT EXIST"
- fi
+#if [ -f "$HOME/tcn-environment-variables/var" ]; then
+#  source "$HOME/tcn-environment-variables/var"
+#  echo "Custom tcn variables loaded"
+#else
+#  echo "WARNING - $HOME/tcn-environment-variables/var DOES NOT EXIST"
+#fi
 
 #~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~
 
@@ -206,11 +206,6 @@ function tcntask() {
     echo "AVAILABLE TAGS: +work +tech +home"
     echo "AVAILABLE RECUR: 1wk weekdays biweekly mo quarterly annual"
     echo "  for more durations see https://taskwarrior.org/docs/durations.html"
-    echo
-
-    echo "-=-=-=-=-=-=-=-=-=-=-=-=-=SYNC-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-"
-    echo
-    task sync
     echo
 
     echo "-=-=-=-=-=-=-=-=-=-=-=-=-=PRODUCTIVITY-=-=-=-=-=-=-=-=-=-=-=-=-=-"
