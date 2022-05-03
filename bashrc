@@ -123,13 +123,6 @@ function tcnsource() {
    else
        echo "WARNING: $TCN_BASHRC does not exist"
    fi
-
-  if [ -f "$HOME/tcn-environment-variables/var" ]; then
-    source "$HOME/tcn-environment-variables/var"
-    echo "Custom tcn variables loaded"
-  else
-    echo "WARNING - $HOME/tcn-environment-variables/var DOES NOT EXIST"
-   fi
 }
 export -f tcnsource
 
