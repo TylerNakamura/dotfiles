@@ -191,8 +191,6 @@ export -f tcntfdestroy
 
 # tcntask
 function tcntask() {
-    clear
-
     echo "-=-=-=-=-=-=-=-=-=-=-=-=-=EXAMPLE FIELDS-=-=-=-=-=-=-=-=-=-=-=-=-"
     echo
     echo "task add +work priority:H wait:2020-08-01 due:2020-09-01 depends:40 recur:1wk \"Mow Lawn\""
