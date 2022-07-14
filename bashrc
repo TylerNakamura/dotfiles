@@ -41,16 +41,8 @@
 # - DSSTORE killer (maybe AAE files too?)
 
 #~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~
-# INIT
-# I don't want to store custom env vars in this repo because it's public
-# it's not the end of the world if I don't have them
-
-#if [ -f "$HOME/tcn-environment-variables/var" ]; then
-#  source "$HOME/tcn-environment-variables/var"
-#  echo "Custom tcn variables loaded"
-#else
-#  echo "WARNING - $HOME/tcn-environment-variables/var DOES NOT EXIST"
-#fi
+# VARIABLES
+export TCN_BASHRC="/Users/tylernakamura/dotfiles/bashrc"
 
 #~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~
 
@@ -82,30 +74,9 @@ alias tcnlistblockdevices="lsblk -o NAME,SIZE,FSTYPE,TYPE,MOUNTPOINT"
 
 #~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~
 
-# linux command to switch the left/right designations for monitors
-# http://unix.stackexchange.com/questions/10589/how-can-i-swap-my-two-screens-left-to-right
-alias tcnswitchmonitor="xrandr --output HDMI-0 --left-of DVI-I-0"
-
-#~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~
-
 # http://askubuntu.com/questions/370786/how-to-convert-avi-xvid-to-mkv-or-mp4-h264
 # converts AVI video files to MP4
 alias tcnavitomp4="avconv -i test.avi -c:v libx264 -c:a copy outputfile.mp4"
-
-#~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~
-
-# askubuntu.com/questions/39180/pdf-to-mobi-convertor
-# converts PDF to mobi files
-# TODO, create a function here and take in an argument
-alias tcnconverttomobi="ebook-converter document.pdf .mobi"
-
-#~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~
-
-function tcnbrewallow(){
-  sudo chown -R $(whoami) /usr/local/bin /usr/local/etc /usr/local/sbin /usr/local/share /usr/local/share/doc
-  chmod u+w /usr/local/bin /usr/local/etc /usr/local/sbin /usr/local/share /usr/local/share/doc
-}
-export -f tcnbrewallow
 
 #~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~
 
@@ -117,11 +88,11 @@ alias tcncr2tojpg="ufraw-batch --out-type jpg *.CR2"
 #~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~
 
 function tcnsource() {
-   if [ -f "$TCN_BASHRC" ]; then
+   if [[ -f "$TCN_BASHRC" ]]; then
        source $TCN_BASHRC
-       echo "$TCN_BASHRC reloaded"
+       echo "$TCN_BASHRC loaded"
    else
-       echo "WARNING: $TCN_BASHRC does not exist"
+       echo "WARNING: cannot find bashrc file at \$TCN_BASHRC: $TCN_BASHRC"
    fi
 }
 export -f tcnsource
