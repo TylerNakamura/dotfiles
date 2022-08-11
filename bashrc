@@ -180,47 +180,7 @@ function tcntask() {
     # print 3 months of the calendar
     cal -3
 
-    # check overdue tasks first
-    task overdue > /dev/null 2>&1
-    # if there is stuff overdue, print that
-    if [ $? -eq 0 ]
-    then
-        echo "-=-=-=-=-=-=-=-=-=-=-=-=-=OVERDUE TASKS-=-=-=-=-=-=-=-=-=-=-=-=-="
-        task overdue
-        return 0
-    fi
-
-    # check if we are on work machine or personal machine 
-    # work machine will have "google" in hostname somewhere
-    UNAME=$(uname -a)
-    GOOG_SUB='google'
-    # if using work machine...
-    if [[ "$UNAME" =~ .*"$GOOG_SUB".* ]]; then
-        # check started tasks
-        task active -home > /dev/null 2>&1
-        # if there are tasks started, print that
-        if [ $? -eq 0 ]
-        then
-            echo "-=-=-=-=-=-=-=-=-=-=-=-=-=ACTIVE WORK TASKS-=-=-=-=-=-=-=-=-=-=-="
-            task active -home
-        else
-            echo "-=-=-=-=-=-=-=-=-=-=-=-=-=ALL WORK TASKS-=-=-=-=-=-=-=-=-=-=-=-=-"
-            task -home
-        fi
-    # if _not_ using work computer...
-    else
-        # check started tasks
-        task active -work > /dev/null 2>&1
-        # if there are tasks started, print that
-        if [ $? -eq 0 ]
-        then
-            echo "-=-=-=-=-=-=-=-=-=-=-=-=-=ACTIVE HOME TASKS-=-=-=-=-=-=-=-=-=-=-="
-            task active -work
-        else
-            echo "-=-=-=-=-=-=-=-=-=-=-=-=-=ALL HOME TASKS-=-=-=-=-=-=-=-=-=-=-=-=-"
-            task -work
-        fi
-    fi
+    task
 }
 export -f tcntask
 
