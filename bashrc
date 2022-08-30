@@ -174,12 +174,16 @@ function tcntask() {
     # print monthly productivity chart
     task ghistory.weekly
 
+    echo "-=-=-=-=-=-=-=-=-=TASKS COMPLETED IN LAST WEEK-==-=-=-=-=-=-=-=-=-"
+    task end.after:today-1wk completed
+    echo
 
     echo "-=-=-=-=-=-=-=-=-=-=-=-=-=CALENDAR-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-"
     echo
     # print 3 months of the calendar
     cal -3
 
+    echo "-=-=-=-=-=-=-=-=-=-=-=-=-=TASKS-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-"
     task
 }
 export -f tcntask
